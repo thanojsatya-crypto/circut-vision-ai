@@ -1,0 +1,26 @@
+# Private database builder script (contains API Key)
+db_builder.py
+
+# Python caching
+__pycache__/
+*.pyc
+
+# Local environment variables
+.env
+.env.local
+
+# Virtual environments
+.venv/
+venv/
+ENV/
+env/
+
+# Streamlit secrets
+.streamlit/secrets.toml
+secrets.toml
+.streamlit/config.toml
+
+# System files
+.DS_Store
+Thumbs.db
+

@@ -1,0 +1,99 @@
+## 1. CORE FORMULAS & MATHEMATICS
+
+| Category | Equation | Variable Definitions | Notes |
+|----------|----------|----------------------|-------|
+| **Time‑domain differential equations** | \( \frac{d^n y(t)}{dt^n} + a_{n-1}\frac{d^{n-1}y(t)}{dt^{n-1}} + \dots + a_0 y(t) = b_m \frac{d^m x(t)}{dt^m} + \dots + b_0 x(t) \) | \(y(t)\): output, \(x(t)\): input, \(a_i, b_j\): system coefficients | Linear time‑invariant (LTI) systems |
+| **Laplace transform of LTI system** | \( H(s) = \frac{Y(s)}{X(s)} = \frac{b_ms^m + \dots + b_0}{s^n + a_{n-1}s^{n-1} + \dots + a_0} \) | \(s = \sigma + j\omega\) | Transfer function |
+| **Frequency response** | \( H(j\omega) = |H(j\omega)| e^{j\angle H(j\omega)} \) | Magnitude and phase | |
+| **Bode magnitude** | \( 20\log_{10}|H(j\omega)| \) | dB | |
+| **Bode phase** | \( \angle H(j\omega) \) | degrees | |
+| **Fourier series (periodic)** | \( x(t) = a_0 + \sum_{k=1}^{\infty} [a_k \cos(k\omega_0 t) + b_k \sin(k\omega_0 t)] \) | \( \omega_0 = 2\pi/T \) | |
+| **Fourier transform (aperiodic)** | \( X(j\omega) = \int_{-\infty}^{\infty} x(t) e^{-j\omega t} dt \) | | |
+| **Convolution integral** | \( y(t) = x(t) * h(t) = \int_{-\infty}^{\infty} x(\tau) h(t-\tau) d\tau \) | | |
+| **Impulse response** | \( h(t) = \mathcal{L}^{-1}\{H(s)\} \) | | |
+| **Sampling theorem** | \( f_s \ge 2 f_{max} \) | \(f_s\): sampling frequency, \(f_{max}\): highest signal frequency | |
+| **Nyquist plot** | Plot of \( \Re\{H(j\omega)\} \) vs \( \Im\{H(j\omega)\} \) | | |
+| **State‑space representation** | \( \dot{\mathbf{x}} = \mathbf{A}\mathbf{x} + \mathbf{B}\mathbf{u} \) <br> \( \mathbf{y} = \mathbf{C}\mathbf{x} + \mathbf{D}\mathbf{u} \) | \(\mathbf{x}\): state vector, \(\mathbf{u}\): input, \(\mathbf{y}\): output | |
+| **RLC series circuit** | \( V_{in} = V_R + V_L + V_C \) <br> \( V_R = iR \) <br> \( V_L = L \frac{di}{dt} \) <br> \( V_C = \frac{1}{C}\int i dt \) | | |
+| **RLC parallel circuit** | \( I_{in} = I_R + I_L + I_C \) <br> \( I_R = \frac{V}{R} \) <br> \( I_L = C \frac{dV}{dt} \) <br> \( I_C = \frac{V}{j\omega L} \) | | |
+| **Quality factor (Q)** | \( Q = \frac{f_0}{\Delta f} = \frac{1}{R}\sqrt{\frac{L}{C}} \) | \(f_0\): resonant freq, \(\Delta f\): bandwidth | |
+| **Bandwidth of RC low‑pass** | \( f_c = \frac{1}{2\pi RC} \) | Cut‑off freq | |
+| **Bandwidth of RL high‑pass** | \( f_c = \frac{R}{2\pi L} \) | | |
+| **Transfer function of first‑order low‑pass** | \( H(s) = \frac{1}{1 + sRC} \) | | |
+| **Transfer function of first‑order high‑pass** | \( H(s) = \frac{sRC}{1 + sRC} \) | | |
+| **Standard approximations** | - Small‑signal linearization: \( v(t) \approx V_{DC} + v_{ac}(t) \) <br> - Neglecting parasitic \(C_{gd}\) in MOSFETs for low‑freq <br> - Treating inductors as ideal at high freq | | |
+
+## 2. DESIGN ORDER OF OPERATIONS
+
+1. **Define performance specifications**  
+   - Bandwidth, gain, phase margin, noise, power, size.  
+2. **Select system type** (continuous‑time, discrete‑time, analog filter, digital filter).  
+3. **Choose basic topology** (e.g., Sallen‑Key for passive RC, op‑amp integrator for active).  
+4. **Derive transfer function** using chosen topology.  
+5. **Calculate component values**  
+   - Start with standard values (e.g., \(R=10\,k\Omega\), \(C=10\,nF\)).  
+   - Adjust to meet cut‑off or resonant frequency.  
+6. **Simulate** (SPICE, MATLAB/Simulink).  
+7. **Iterate**: tweak component values, re‑simulate.  
+8. **Check stability** (phase margin > 45°, gain margin > 6 dB).  
+9. **Prototype on breadboard**.  
+10. **Measure** (oscilloscope, LCR meter).  
+11. **Validate against specs**.  
+12. **Finalize PCB layout** (minimize trace inductance, proper grounding).  
+
+## 3. STANDARD VALUES & PARAMETERS
+
+| Parameter | Typical Value | Context |
+|-----------|---------------|---------|
+| **Supply voltages** | \( \pm 5\,V, \pm 12\,V, 3.3\,V, 5\,V, 12\,V \) | General purpose ICs |
+| **Op‑amp supply** | \( \pm 15\,V \) (±15 V rails) | Classic op‑amps |
+| **Resistor tolerance** | 1 % (0.5 % for precision) | Precision circuits |
+| **Capacitor tolerance** | 5 % (10 % for electrolytic) | Timing circuits |
+| **Standard RC time constant** | \( \tau = RC = 1\,ms, 10\,ms, 100\,ms \) | Low‑pass filters |
+| **Standard RLC resonant freq** | \( f_0 = 1/(2\pi\sqrt{LC}) \) → 1 kHz, 10 kHz, 100 kHz | Band‑pass filters |
+| **MOSFET threshold** | \( V_{th} = 2–4\,V \) | Low‑voltage logic |
+| **Diode forward drop** | \( V_F \approx 0.7\,V \) (silicon) | Rectifiers |
+| **LED forward drop** | \( V_F \approx 2–3.3\,V \) | Indicator LEDs |
+| **Typical resistor power rating** | 1/4 W (0.25 W), 1/2 W (0.5 W), 1 W | Low‑power vs high‑power |
+| **Typical capacitor ESR** | < 10 mΩ (ceramic), < 100 mΩ (tantalum) | Power supply decoupling |
+| **Standard decoupling capacitor** | 0.1 µF ceramic + 10 µF electrolytic | Near IC power pins |
+| **Standard logic levels** | TTL: 0 V–0.8 V (low), 2 V–5 V (high) | 5 V logic |
+| **Standard logic levels** | CMOS: 0 V–0.3 V (low), 0.7 V–V_DD (high) | 3.3 V logic |
+
+## 4. PRACTICAL COMPONENT SELECTION RULES
+
+| Component | When to Use | Typical Part Numbers | Notes |
+|-----------|-------------|----------------------|-------|
+| **Electrolytic Capacitor** | High‑value decoupling (> 10 µF), power supply smoothing | 10 µF 25 V, 100 µF 25 V | Polarized, low ESR |
+| **Ceramic Capacitor** | Low‑value decoupling (< 1 µF), timing, RF | 0.1 µF 50 V, 10 pF 50 V | Non‑polar, low ESR |
+| **Tantalum Capacitor** | High‑value, low ESR, stable | 10 µF 25 V | Non‑polar, limited voltage |
+| **Resistor (1/4 W)** | Low‑power signal paths, pull‑ups | 1 kΩ 1/4 W | Standard |
+| **Resistor (1 W)** | Power divider, current limiting | 10 Ω 1 W | Heat sink if > 0.5 W |
+| **Op‑amp (LM741)** | General purpose, low speed | LM741 | ±15 V rails |
+| **Op‑amp (OPA2134)** | Audio, low noise | OPA2134 | ±15 V rails |
+| **MOSFET (IRF540)** | Power switching, high current | IRF540 | 100 V, 33 A |
+| **BJT (2N2222)** | Low‑power switching | 2N2222 | 40 V, 600 mA |
+| **IC (LM324)** | Quad op‑amp, low cost | LM324 | ±15 V rails |
+| **IC (LM358)** | Dual op‑amp, single supply | LM358 | 0–15 V |
+| **IC (ATmega328P)** | Microcontroller | ATmega328P | 5 V, 20 MHz |
+| **IC (74HC595)** | Shift register | 74HC595 | 5 V, 20 MHz |
+
+## 5. COMMON MISTAKES & TROUBLESHOOTING
+
+| # | Mistake | Symptom | Corrective Action |
+|---|---------|---------|-------------------|
+| 1 | **Missing decoupling capacitors** | Oscilloscope shows high‑frequency noise on supply rails, op‑amp oscillation | Add 0.1 µF ceramic + 10 µF electrolytic close to each power pin |
+| 2 | **Incorrect resistor tolerance** | Filter cutoff deviates > 10 % from design | Use 1 % resistors for critical timing, verify with multimeter |
+| 3 | **Polarity error on electrolytic** | Circuit does not power, LED stays off | Check orientation, reverse polarity leads to short |
+| 4 | **Ground loop on breadboard** | Unexpected voltage offsets, noise | Use single‑point ground, keep ground traces short |
+| 5 | **Overloading op‑amp output** | Output saturates at rail, no linear region | Add current‑limiting resistor or use rail‑to‑rail op‑amp |
+
+## 6. VIVA & INTERVIEW TRAPS
+
+| Question | Correct Answer |
+|----------|----------------|
+| 1 | *Explain the difference between a transfer function and a state‑space model.* | Transfer function describes input‑output relation in Laplace domain; state‑space gives internal state equations, useful for multi‑input/multi‑output and time‑domain simulation. |
+| 2 | *Why does a first‑order RC low‑pass filter have a 3 dB point at \(f_c = 1/(2\pi RC)\)?* | At \(f_c\), magnitude \( |H(j\omega)| = 1/\sqrt{2} \) of DC gain, corresponding to –3 dB. |
+| 3 | *What is the effect of ESR in a capacitor on a power‑supply decoupling network?* | ESR adds series resistance, limiting current ripple and increasing power dissipation; high ESR degrades filtering at high frequencies. |
+| 4 | *Derive the quality factor \(Q\) for a series RLC circuit.* | \( Q = \frac{1}{R}\sqrt{\frac{L}{C}} = \frac{f_0}{\Delta f} \), where \(f_0 = 1/(2\pi\sqrt{LC})\). |
+| 5 | *Explain why an op‑amp with a single supply cannot output a negative voltage.* | With single supply, the op‑amp’s common‑mode input range and output swing are limited to 0 V to V_DD; negative output would require negative rail. Use rail‑to‑rail op‑amp or bias the input. |

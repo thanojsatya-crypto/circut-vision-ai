@@ -1,0 +1,37 @@
+## 1. CORE FORMULAS & MATHEMATICS  
+Gain = Vout/Vin  
+Frequency = 1/(2π√(LC))  
+Power = P = V²/R  
+Efficiency = P_out/P_in  
+
+## 2. DESIGN PROCEDURE (Step-by-Step)  
+1. Define specs.  
+2. Select components.  
+3. Choose ICs.  
+4. Test.  
+5. Finalize design.  
+
+## 3. STANDARD IC / MODULE REFERENCE  
+7400NX7N, 100pF, 10kΩ, 1MHz, 7400 series.  
+
+## 4. COMPONENT SELECTION THRESHOLDS  
+Minimum current: 10mA. Voltage derating: 10%. Tolerance: ±5%.  
+
+## 5. BREADBOARD & PCB TROUBLESHOOTING  
+1. Loose connections.  
+2. Short circuit.  
+3. Incorrect polarity.  
+4. Component failure.  
+5. Signal interference.  
+
+## 6. VIVA & INTERVIEW TRAPS  
+1. What is a timer?  
+   Answer: Measures time intervals.  
+2. Common mistake: Confusing clock types.  
+   Answer: Incorrect frequency conversion.  
+3. Why use a timer?  
+   Answer: Precision measurement.  
+4. What causes signal loss?  
+   Answer: Resistance, interference.  
+5. How to calibrate?  
+   Answer: Compare with known standard.

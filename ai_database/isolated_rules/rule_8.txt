@@ -1,0 +1,17 @@
+## 1. CORE CONCEPTS & ARCHITECTURE  
+Architectural blocks: CPU, registers, buses, control flow.  
+
+## 2. PINOUT RULES & GPIO MAPPING  
+PWM, ADC, Interrupts, communication protocols, 3.3V/5V tolerances.  
+
+## 3. STANDARD INITIALIZATION ALGORITHMS  
+Initialize timers, UART, SPI, I2C with step-by-step code.  
+
+## 4. INTERFACING TABLES  
+Pin mapping, pull-ups, decoupling capacitors placement.  
+
+## 5. COMMON MISTAKES & HARDWARE FAULTS  
+Top 5 errors with root causes and fixes.  
+
+## 6. VIVA & INTERVIEW TRAPS  
+Five conceptual questions with answers.

@@ -1,0 +1,120 @@
+## 1. CORE FORMULAS & MATHEMATICS
+| Category | Formula | Description |
+|----------|---------|-------------|
+| **Power** | \(P = V \times I\) | Instantaneous power |
+| | \(P_{avg} = V_{rms} \times I_{rms}\) | Average power for AC |
+| | \(P_{loss}=I^{2}R\) | Conduction loss in conductors |
+| | \(P_{switch}= \frac{1}{2} V_{DS} I_{D} t_{on/off} f_{sw}\) | Switching loss in MOSFET/IGBT |
+| **Efficiency** | \(\eta = \frac{P_{out}}{P_{in}} \times 100\%\) | Overall efficiency |
+| | \(\eta_{conv}= \frac{V_{out} I_{out}}{V_{in} I_{in}}\) | Converter efficiency |
+| **Voltage Regulation** | \(\Delta V_{out}=V_{out, no‑load} - V_{out, full‑load}\) | Regulation spec |
+| **Ripple** | \(V_{ripple}= \frac{I_{out}}{f_{sw} C}\) (buck/boost) | Output voltage ripple |
+| **Inductor Energy** | \(E_L = \frac{1}{2} L I^{2}\) | Energy stored in inductor |
+| **Capacitor Ripple Current** | \(I_{C(ripple)} = C \times \frac{dV}{dt}\) | RMS ripple current rating |
+| **Duty Cycle** | \(D = \frac{V_{out}}{V_{in}}\) (ideal buck) | Duty ratio |
+| | \(D = \frac{V_{in}}{V_{out}}\) (ideal boost) | Duty ratio |
+| **Switching Frequency** | \(f_{sw}= \frac{1}{T_{on}+T_{off}}\) | Frequency of PWM |
+| **Gain (Linear Regulator)** | \(A_v = 1 + \frac{R_f}{R_g}\) | Non‑inverting op‑amp gain (used in error amp) |
+| **Loop Bandwidth** | \(f_{BW}= \frac{1}{2\pi R_{c} C_{c}}\) | Compensation network bandwidth |
+| **Thermal** | \(\Delta T = P_{loss} \times \theta_{JA}\) | Junction‑to‑ambient temperature rise |
+| **Safety** | \(P_{max}= \frac{V_{max}}{R_{min}}\) | Max power allowed by component rating |
+
+---
+
+## 2. DESIGN PROCEDURE (Step‑by‑Step)
+1. **Define specifications**  
+   - Input voltage range (min, max, nominal)  
+   - Output voltage(s) & tolerance  
+   - Output current & power  
+   - Efficiency target, ripple, transient load step, standby power, operating temperature.  
+2. **Select topology**  
+   - Buck, boost, buck‑boost, SEPIC, flyback, forward, linear regulator, etc., based on voltage conversion ratio and isolation needs.  
+3. **Calculate duty cycle & switching frequency**  
+   - Use ideal duty formulas, then apply margin for component limits.  
+4. **Determine inductor value**  
+   - \(L = \frac{(V_{in(min)}-V_{out}) \times D}{\Delta I_{L} \times f_{sw}}\) (buck)  
+   - Choose \(\Delta I_{L}\) ≈ 20‑40 % of I_out.  
+5. **Select output capacitor(s)**  
+   - \(C_{out} \ge \frac{I_{out} \times D}{V_{ripple} \times f_{sw}}\)  
+   - Verify ESR and ripple‑current rating.  
+6. **Choose input filter** (LC or π) to meet EMI limits.  
+7. **Select switching device** (MOSFET/IGBT)  
+   - V_DS ≥ 1.5 × V_in(max)  
+   - I_D ≥ 2 × I_out (including ripple).  
+   - R_DS(on) low for efficiency.  
+8. **Select diode (if non‑synchronous)**  
+   - Reverse voltage ≥ V_in(max)  
+   - Forward current ≥ I_out (peak).  
+9. **Design control loop**  
+   - Pick error‑amp, compensation network (R‑C).  
+   - Target phase margin 45‑60°.  
+   - Simulate Bode plot.  
+10. **Thermal analysis**  
+    - Compute total loss (conduction + switching + quiescent).  
+    - Choose heatsink or copper area to keep \(T_j < T_{j,max}\).  
+11. **Component derating**  
+    - Apply 20 % voltage derating, 50 % current derating for safety.  
+12. **Create schematic & PCB layout**  
+    - Minimize loop area for high‑frequency paths (switch‑MOSFET‑inductor‑output).  
+    - Place input and output caps close to IC pins.  
+    - Use wide copper pours for ground and power.  
+13. **Prototype on breadboard or evaluation board** (if possible)  
+    - Verify start‑up, load regulation, line regulation, transient response.  
+14. **Iterate**  
+    - Adjust component values, compensation, or layout based on measurements.  
+15. **Finalize BOM**  
+    - List part numbers, footprints, ratings, and supplier sources.  
+
+---
+
+## 3. STANDARD IC / MODULE REFERENCE
+| Part No. | Type | Input Voltage | Output(s) | Switching Freq. | Key Specs | Pinout Summary |
+|----------|------|---------------|-----------|----------------|-----------|----------------|
+| LM2596 | Buck Regulator (Adjustable) | 4 V‑40 V | 1.2 V‑37 V | 150 kHz (fixed) | 3 A, 75 % eff., 1.5 % Vout tol. | 1 VIN, 2 GND, 3 SW, 4 FB, 5 EN, 6 VOUT |
+| LM7805 | Linear Regulator | 7 V‑35 V | 5 V | N/A | 1 A, 5 % tol., dropout 2 V | 1 IN, 2 GND, 3 OUT |
+| TL494 | PWM Controller | 7 V‑40 V | N/A (external) | 0‑100 kHz (set) | Dual error amp, 2‑phase | 1 REF, 2 COMP, 3 ERROR, 4 GND, 5 VCC, 6 RAMP, 7 CT, 8 CT, 9 OUTA, 10 OUTB, 11 GND, 12 VCC |
+| LM2577 | Boost Regulator | 3.5 V‑40 V | 5 V‑60 V | 300 kHz (fixed) | 3 A, 85 % eff. | 1 VIN, 2 GND, 3 SW, 4 FB, 5 EN, 6 VOUT |
+| UC3842 | Current‑mode PWM Controller | 7 V‑30 V | N/A | 0‑200 kHz (set) | Peak current mode, 100 kHz typical | 1 VCC, 2 GND, 3 COMP, 4 CS, 5 VREF, 6 RAMP, 7 FB, 8 VCC, 9 GND, 10 OUT, 11 SYNC |
+| IRF540N | N‑MOSFET | 100 V | 33 A | R_DS(on)=0.077 Ω | V_GS(th)=2‑4 V | 1 G, 2 D, 3 S |
+| 1N5819 | Schottky Diode | 40 V | 1 A | Vf≈0.45 V | Fast recovery | 1 ANODE, 2 CATHODE |
+| TPS5430 | Synchronous Buck | 5.5‑36 V | 0.8‑30 V | 1.2 MHz | 3 A, 95 % eff., programmable | 1 VIN, 2 GND, 3 EN, 4 SW, 5 FB, 6 GND, 7 VCC, 8 SYNC, 9 VREF, 10 COMP |
+| LTM8030 | Wide‑range Buck‑Boost | 2.5‑15 V | 0.8‑15 V | 2 MHz | 3 A, 95 % eff., I²C | 1 VIN, 2 GND, 3 VOUT, 4 FB, 5 EN, 6 SCL, 7 SDA, 8 SYNC |
+| ADP2302 | 2‑A Synchronous Buck | 4.5‑20 V | 0.8‑20 V | 2.2 MHz | 95 % eff., 2 A | 1 VIN, 2 GND, 3 EN, 4 SW, 5 FB, 6 COMP, 7 VCC, 8 SYNC |
+| XL4015 | Adjustable Buck | 4‑38 V | 1.25‑36 V | 180 kHz | 5 A, 96 % eff. | 1 VIN, 2 GND, 3 SW, 4 FB, 5 ON/OFF, 6 VOUT |
+| EPC905 | Isolated Flyback Converter Module | 85‑265 VAC | 12 V‑48 V DC | 100 kHz | 2 W‑30 W, 150 % overload | 1 AC IN, 2 GND, 3 DC OUT+, 4 DC OUT‑ |
+
+---
+
+## 4. COMPONENT SELECTION THRESHOLDS
+| Component | Voltage Derating | Current/Power Derating | Tolerance Guideline | Typical Rating Selection |
+|-----------|------------------|------------------------|---------------------|--------------------------|
+| Resistor (SMD) | ≤ 0.6 × V_Rated (for >250 mW) | ≤ 0.5 × Power_Rated | 1 % (precision) or 5 % (general) | 0.25 W for ≤30 V, 0.5 W for ≤60 V |
+| Capacitor (Electrolytic) | ≤ 0.7 × V_Rated | ≤ 0.5 × Ripple‑Current Rating | ±20 % (typ.) | Choose voltage ≥ 1.5 × max DC + ripple |
+| Capacitor (MLCC) | ≤ 0.8 × V_Rated | ≤ 0.6 × IRMS rating | ±5 % (C0G/NP0) or ±10 % (X7R) | X7R 10 % tolerance, voltage ≥ 1.2 × max |
+| Inductor (Power) | ≤ 0.6 × V_Rated (if saturates) | ≤ 0.5 × I_sat | ±10 % inductance tolerance | Saturation current ≥ 1.5 × peak inductor current |
+| MOSFET | V_DS ≥ 1.5 × V_in(max) | I_D ≥ 2 × I_out (including ripple) | R_DS(on) tolerance ±10 % | Use 100 V, 30 A MOSFET for 24 V, 10 A designs |
+| Schottky Diode | V_RRM ≥ 1.5 × V_in(max) | I_F ≥ 1.5 × I_out (peak) | Vf tolerance ±5 % | 40 V, 3 A for 24 V, 2 A output |
+| IC (Regulator) | V_IN(max) ≤ 0.9 × IC rating | I_OUT ≤ 0.8 × IC rating | Output tolerance per datasheet | Choose LM2596 for up to 3 A, 40 V input |
+| PCB Trace (Copper) | N/A | Current capacity per IPC‑2221 | Width ≥ calculated for 10 % temperature rise | 1 oz, 0.5 mm width ≈ 2 A for outer layer |
+
+---
+
+## 5. BREADBOARD & PCB TROUBLESHOOTING
+| # | Symptom | Probable Cause | Test Method | Fix |
+|---|----------|----------------|-------------|-----|
+| 1 | No output voltage | Power‑on reset pin floating / EN pin low | Measure EN pin voltage; check pull‑up resistor | Connect EN to VIN via proper resistor (e.g., 10 kΩ) |
+| 2 | Excessive ripple (>5 % of Vout) | Output capacitor ESR too high or insufficient C | Measure ripple with oscilloscope; check ESR with LCR meter | Replace with low‑ESR MLCC + bulk electrolytic; add parallel ceramic |
+| 3 | Over‑temperature of MOSFET | High switching frequency + large R_DS(on) + inadequate heatsink | Infrared camera or thermistor on MOSFET die | Increase gate drive voltage, add heatsink, or select lower R_DS(on) MOSFET |
+| 4 | Oscillation / unstable regulation | Loop compensation inadequate (phase margin <45°) | Bode plot using network analyzer or probe the error amp | Redesign compensation network (adjust R_C, C_C values) |
+| 5 | Output voltage drops under load step | Inductor too small → high ΔI causing droop | Measure inductor current ripple; calculate L value | Increase inductance or reduce switching frequency; add output capacitor for better transient response |
+
+---
+
+## 6. VIVA & INTERVIEW TRAPS
+| Q# | Question | Correct Answer & Brief Explanation |
+|----|----------|--------------------------------------|
+| 1 | *Why does a synchronous buck converter achieve higher efficiency than a diode‑based buck?* | The synchronous MOSFET replaces the Schottky diode, eliminating the diode’s forward voltage drop (≈0.4‑0.6 V). At high output currents the loss saved (I·V_f) is substantial, raising efficiency. |
+| 2 | *Explain the impact of duty‑cycle variation on inductor current ripple in a boost converter.* | In boost, \(ΔI_L = \frac{V_{in} D}{L f_{sw}}\). As D increases (higher output voltage), the on‑time grows, raising ΔI_L linearly. Larger ripple can cause core saturation and higher EMI. |
+| 3 | *What is the purpose of the “dead‑time” in a half‑bridge driver, and how does it affect switching losses?* | Dead‑time prevents shoot‑through (both MOSFETs on simultaneously). Too little dead‑time causes cross‑conduction → catastrophic failure; too much dead‑time increases turn‑off loss because the high‑side MOSFET sees the body‑diode recovery of the low‑side, raising switching loss. |
+| 4 *|*How does the ESR of the output capacitor influence the control‑loop stability of a voltage‑mode regulator?* | ESR introduces a zero in the loop transfer function that can provide phase boost, aiding stability. However, if ESR is too low (e.g., all‑ceramic caps), the zero moves to high frequency, reducing phase margin; additional compensation is required. |
+| 5 | *Why must the input filter of a switching regulator meet both conducted and radiated EMI limits, and how is the filter order chosen?* | Switching edges generate high‑frequency harmonics that can travel on power lines (conducted) and act as antennas (radiated). A π‑filter (LC‑C) or LCL provides attenuation at the switching frequency and its multiples. Order is chosen to achieve >20‑30 dB attenuation at the dominant harmonic while keeping component size reasonable. |

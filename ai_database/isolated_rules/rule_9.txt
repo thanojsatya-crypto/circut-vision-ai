@@ -1,0 +1,17 @@
+## 1. CORE CONCEPTS & ARCHITECTURE  
+Memory Hierarchies, DDR4, SRAM vs ROM, Cache Structures.  
+
+## 2. PINOUT RULES & GPIO MAPPING  
+Pins: A0-A16, GPIO 0-15, VCC, GND, I/O. Voltage Levels: 3.3V/5V, Pull-ups/pull-down resistors.  
+
+## 3. STANDARD INITIALIZATION ALGORITHMS  
+Initialize timers via CLK, UART via SPI/I2C, Sensor via ADC.  
+
+## 4. INTERFACING TABLES  
+MCU Pin → Component Pin → Function: A0→GPIO, A1→UART, VCC→5V. Decoupling Capacitors at 10µF.  
+
+## 5. COMMON MISTAKES & HARDWARE FAULTS  
+Incorrect voltage levels, unbalanced power distribution, missing decoupling capacitors.  
+
+## 6. VIVA & INTERVIEW TRAPS  
+Q1: Why SRAM? Q2: Voltage tolerance? Q3: Timing issues? Q4: Memory mapping? Q5: Interrupt handling? Q6: Power consumption?

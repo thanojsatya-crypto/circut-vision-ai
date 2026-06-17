@@ -1,0 +1,513 @@
+## 1. CORE FORMULAS & MATHEMATICS
+
+### 1.1 General Signal, Gain, and Power
+
+| Quantity | Equation |
+|---|---|
+| Sine peak voltage | \(V_{pk}=V_{pp}/2\) |
+| Sine RMS voltage | \(V_{rms}=V_{pk}/\sqrt{2}=V_{pp}/(2\sqrt{2})\) |
+| Average power, resistive load | \(P=V_{rms}^{2}/R=I_{rms}^{2}R\) |
+| AC average power | \(P=V_{rms}I_{rms}\cos\phi\) |
+| Voltage gain, linear | \(A_v=V_{out}/V_{in}\) |
+| Voltage gain, dB | \(A_{v,dB}=20\log_{10}(V_{out}/V_{in})\) |
+| Power gain, dB | \(A_{p,dB}=10\log_{10}(P_{out}/P_{in})\) |
+| dBm conversion | \(P_{dBm}=10\log_{10}(P_{mW})\) |
+| dBm to mW | \(P_{mW}=10^{P_{dBm}/10}\) |
+| RMS voltage from dBm | \(V_{rms}=\sqrt{10^{P_{dBm}/10}\cdot 0.001\cdot R}\) |
+| Cascaded linear gain | \(G_{tot}=G_1G_2G_3\cdots\) |
+| Cascaded dB gain | \(G_{tot,dB}=G_{1,dB}+G_{2,dB}+G_{3,dB}+\cdots\) |
+
+---
+
+### 1.2 Audio Preamplifier and Op-Amp Equations
+
+| Function | Equation |
+|---|---|
+| Non-inverting op-amp gain | \(A_v=1+\frac{R_f}{R_g}\) |
+| Inverting op-amp gain | \(A_v=-\frac{R_f}{R_{in}}\) |
+| Voltage follower gain | \(A_v=1\) |
+| Matched differential amplifier gain | \(A_d=\frac{R_f}{R_{in}}\) |
+| Instrumentation amplifier gain, INA128 type | \(G=1+\frac{50\,k\Omega}{R_G}\) |
+| Instrumentation amplifier gain, AD620 type | \(G=1+\frac{49.4\,k\Omega}{R_G}\) |
+| Input coupling high-pass cutoff | \(f_c=\frac{1}{2\pi R_{in}C_c}\) |
+| Coupling capacitor minimum | \(C_c\geq \frac{1}{2\pi f_{min}R_{in}}\) |
+| RC low-pass cutoff | \(f_c=\frac{1}{2\pi RC}\) |
+| Op-amp closed-loop bandwidth estimate | \(f_{-3dB}\approx \frac{GBW}{A_{noise}}\) |
+| Slew-rate requirement | \(SR\geq 2\pi f_{max}V_{pk}\) |
+| Full-power bandwidth | \(f_{FPBW}=\frac{SR}{2\pi V_{pk}}\) |
+| Finite open-loop gain closed-loop gain | \(A_{CL}=\frac{A_{OL}}{1+A_{OL}\beta}\) |
+| Feedback factor, non-inverting | \(\beta=\frac{R_g}{R_f+R_g}\) |
+| CMRR | \(CMRR_{dB}=20\log_{10}\left(\frac{A_d}{A_{cm}}\right)\) |
+| PSRR | \(PSRR_{dB}=20\log_{10}\left(\frac{\Delta V_{supply}}{\Delta V_{out}}\right)\) |
+| THD | \(THD=\frac{\sqrt{V_2^2+V_3^2+V_4^2+\cdots}}{V_1}\) |
+| SNR | \(SNR_{dB}=20\log_{10}\left(\frac{V_{signal,rms}}{V_{noise,rms}}\right)\) |
+| Dynamic range | \(DR_{dB}=20\log_{10}\left(\frac{V_{FS,rms}}{V_{noise,rms}}\right)\) |
+| Electret mic bias resistor | \(R_B=\frac{V_{DD}-V_{MIC}}{I_{MIC}}\) |
+| Mic sensitivity voltage | \(V_{out}=10^{S_{dBV}/20}\cdot p_{Pa}\) |
+
+---
+
+### 1.3 Transistor Small-Signal Equations
+
+| Quantity | Equation |
+|---|---|
+| Thermal voltage | \(V_T\approx 25.85\,mV\) at \(300\,K\) |
+| BJT transconductance | \(g_m=\frac{I_C}{V_T}\) |
+| BJT emitter resistance | \(r_e\approx \frac{V_T}{I_E}\) |
+| Common-emitter voltage gain | \(A_v\approx -\frac{R_C\parallel R_L}{r_e+R_E}\) |
+| BJT input impedance estimate | \(Z_{in}\approx R_1\parallel R_2\parallel \beta(r_e+R_E)\) |
+| MOSFET transconductance | \(g_m\approx \frac{2I_D}{V_{OV}}\) |
+| Common-source voltage gain | \(A_v\approx -g_m(R_D\parallel R_L)\) |
+
+---
+
+### 1.4 Power Amplifier Equations
+
+| Quantity | Equation |
+|---|---|
+| Output power | \(P_{out}=\frac{V_{o,rms}^2}{R_L}=\frac{V_{o,pk}^2}{2R_L}\) |
+| Efficiency | \(\eta=\frac{P_{out}}{P_{DC}}\times 100\%\) |
+| Class A resistive-load max output | \(P_{out,max}=\frac{V_{CC}^2}{8R_L}\) |
+| Class A DC input power | \(P_{DC}=V_{CC}I_Q\) |
+| Class A max efficiency, resistive load | \(\eta_{max}=25\%\) |
+| Class A transformer-coupled max efficiency | \(\eta_{max}=50\%\) |
+| Class B output power | \(P_{out}=\frac{V_{pk}^2}{2R_L}\) |
+| Class B DC input power | \(P_{DC}=\frac{2V_{CC}V_{pk}}{\pi R_L}\) |
+| Class B efficiency | \(\eta=\frac{\pi V_{pk}}{4V_{CC}}\) |
+| Class B max efficiency | \(\eta_{max}=78.5\%\) |
+| Total class B device dissipation | \(P_{D,total}=P_{DC}-P_{out}\) |
+| Per-device class B dissipation | \(P_{D,device}=\frac{P_{DC}-P_{out}}{2}\) |
+| Bridge-tied-load ideal peak voltage | \(V_{L,pk}\approx 2V_{DD}\) |
+| Bridge-tied-load ideal sine power | \(P_{out}\approx \frac{2V_{DD}^2}{R_L}\) |
+| Class-D switching loss estimate | \(P_{sw}\approx C_{sw}V_{DD}^2f_s\) |
+| Class-D LC output cutoff | \(f_c=\frac{1}{2\pi\sqrt{LC}}\) |
+| Heatsink thermal resistance limit | \(R_{\theta SA}\leq \frac{T_{j,max}-T_A}{P_D}-R_{\theta JC}-R_{\theta CS}\) |
+
+---
+
+### 1.5 Filter, Resonance, and Frequency Equations
+
+| Function | Equation |
+|---|---|
+| Capacitive reactance | \(X_C=\frac{1}{2\pi fC}\) |
+| Inductive reactance | \(X_L=2\pi fL\) |
+| LC resonance | \(f_0=\frac{1}{2\pi\sqrt{LC}}\) |
+| Series RLC quality factor | \(Q=\frac{X}{R}\) |
+| Parallel RLC quality factor | \(Q=\frac{R}{X}\) |
+| Bandwidth | \(BW=\frac{f_0}{Q}\) |
+| Band-pass center frequency | \(f_0=\sqrt{f_Lf_H}\) |
+| Band-pass bandwidth | \(BW=f_H-f_L\) |
+| Band-pass Q | \(Q=\frac{f_0}{BW}\) |
+| Butterworth low-pass attenuation | \(A_{dB}=10\log_{10}\left[1+\left(\frac{f}{f_c}\right)^{2n}\right]\) |
+| Butterworth high-pass attenuation | \(A_{dB}=10\log_{10}\left[1+\left(\frac{f_c}{f}\right)^{2n}\right]\) |
+| Sallen-Key low-pass center frequency | \(f_0=\frac{1}{2\pi\sqrt{R_1R_2C_1C_2}}\) |
+| Sallen-Key low-pass Q | \(Q=\frac{\sqrt{R_1R_2C_1C_2}}{C_1(R_1+R_2)+(1-K)R_1C_2}\) |
+| Nyquist sampling condition | \(f_s>2B\) |
+| ADC quantization SNR | \(SNR_q\approx 6.02N+1.76\,dB\) |
+| ADC LSB size | \(V_{LSB}=\frac{V_{FS}}{2^N}\) |
+| Group delay | \(\tau_g=-\frac{d\phi}{d\omega}\) |
+
+---
+
+### 1.6 RF Transmission, Matching, and Antenna Equations
+
+| Quantity | Equation |
+|---|---|
+| Free-space wavelength | \(\lambda_0=\frac{c}{f}\) |
+| Guided wavelength | \(\lambda_g=\frac{\lambda_0}{\sqrt{\epsilon_{eff}}}\) |
+| Microstrip effective permittivity | \(\epsilon_{eff}\approx \frac{\epsilon_r+1}{2}+\frac{\epsilon_r-1}{2\sqrt{1+12h/W}}\) |
+| Microstrip \(Z_0\), \(W/h\leq 1\) | \(Z_0\approx \frac{60}{\sqrt{\epsilon_{eff}}}\ln\left(\frac{8h}{W}+\frac{W}{4h}\right)\) |
+| Microstrip \(Z_0\), \(W/h\geq 1\) | \(Z_0\approx \frac{120\pi}{\sqrt{\epsilon_{eff}}\left[W/h+1.393+0.667\ln(W/h+1.444)\right]}\) |
+| Reflection coefficient | \(\Gamma=\frac{Z_L-Z_0}{Z_L+Z_0}\) |
+| Return loss | \(RL_{dB}=-20\log_{10}|\Gamma|\) |
+| VSWR | \(VSWR=\frac{1+|\Gamma|}{1-|\Gamma|}\) |
+| Mismatch loss | \(ML_{dB}=-10\log_{10}(1-|\Gamma|^2)\) |
+| Delivered power | \(P_{del}=P_{inc}(1-|\Gamma|^2)\) |
+| Short-circuited stub input impedance | \(Z_{in}=jZ_0\tan(\beta l)\) |
+| Open-circuited stub input impedance | \(Z_{in}=-jZ_0\cot(\beta l)\) |
+| Phase constant | \(\beta=\frac{2\pi}{\lambda_g}\) |
+| Quarter-wave transformer impedance | \(Z_t=\sqrt{Z_S Z_L}\) |
+| L-network Q | \(Q=\sqrt{\frac{R_H}{R_L}-1}\) |
+| L-network series reactance | \(X_s=QR_L\) |
+| L-network parallel reactance | \(X_p=\frac{R_H}{Q}\) |
+| Reactance to inductance | \(L=\frac{X}{2\pi f}\) |
+| Reactance to capacitance | \(C=\frac{1}{2\pi fX}\) |
+| Friis transmission equation | \(P_r=P_tG_tG_r\left(\frac{\lambda}{4\pi R}\right)^2\) |
+| Free-space path loss | \(FSPL_{dB}=20\log_{10}\left(\frac{4\pi R}{\lambda}\right)\) |
+| Link budget | \(P_{r,dBm}=P_{t,dBm}+G_{t,dBi}+G_{r,dBi}-L_{FS,dB}-L_{cable,dB}-L_{misc,dB}\) |
+
+---
+
+### 1.7 RF Noise, Linearity, Mixer, and Stability Equations
+
+| Quantity | Equation |
+|---|---|
+| Thermal noise voltage | \(e_{n,R}^2=4kTRB\) |
+| Thermal noise current | \(i_{n,R}^2=\frac{4kTB}{R}\) |
+| Noise figure factor | \(F=10^{NF_{dB}/10}\) |
+| Noise temperature | \(T_e=T_0(F-1)\), \(T_0=290\,K\) |
+| Receiver noise floor | \(N_{dBm}=-174+10\log_{10}(B_{Hz})+NF_{dB}\) |
+| Receiver sensitivity | \(S_{dBm}=-174+10\log_{10}(B_{Hz})+NF_{dB}+SNR_{req,dB}\) |
+| Friis cascade noise factor | \(F_{tot}=F_1+\frac{F_2-1}{G_1}+\frac{F_3-1}{G_1G_2}+\cdots\) |
+| Mixer IF frequency | \(f_{IF}=|f_{RF}\pm f_{LO}|\) |
+| LO frequency | \(f_{LO}=f_{RF}\pm f_{IF}\) |
+| Image frequency | \(f_{image}=f_{RF}\pm 2f_{IF}\) |
+| Mixer conversion gain | \(CG=\frac{P_{IF}}{P_{RF}}\) |
+| Conversion gain, dB | \(CG_{dB}=P_{IF,dBm}-P_{RF,dBm}\) |
+| Output third-order product | \(P_{IM3,out,dBm}=3P_{out,fund,dBm}-2OIP3_{dBm}\) |
+| Input/output IP3 relation | \(OIP3_{dBm}=IIP3_{dBm}+G_{dB}\) |
+| Cascaded IIP3, linear powers | \(\frac{1}{IIP3_{tot}}=\frac{1}{IIP3_1}+\frac{G_1}{IIP3_2}+\frac{G_1G_2}{IIP3_3}+\cdots\) |
+| P1dB estimate | \(P_{1dB}\approx OIP3-10\,dB\) |
+| SFDR | \(SFDR_{dB}\approx \frac{2}{3}(OIP3_{dBm}-N_{floor,dBm})\) |
+| Rollet stability factor | \(K=\frac{1-|S_{11}|^2-|S_{22}|^2+|\Delta|^2}{2|S_{12}S_{21}|}\) |
+| Stability determinant | \(\Delta=S_{11}S_{22}-S_{12}S_{21}\) |
+| Unconditional stability condition | \(K>1\) and \(|\Delta|<1\) |
+| Maximum available gain | \(G_{MAG}=\left|\frac{S_{21}}{S_{12}}\right|\left(K-\sqrt{K^2-1}\right)\) |
+| Transducer gain | \(G_T=\frac{|S_{21}|^2(1-|\Gamma_S|^2)(1-|\Gamma_L|^2)}{|(1-S_{11}\Gamma_S)(1-S_{22}\Gamma_L)-S_{12}S_{21}\Gamma_S\Gamma_L|^2}\) |
+
+---
+
+### 1.8 Oscillator and PLL Equations
+
+| Circuit | Equation |
+|---|---|
+| LC oscillator | \(f_0=\frac{1}{2\pi\sqrt{LC}}\) |
+| Wien bridge oscillator | \(f_0=\frac{1}{2\pi RC}\) |
+| RC phase-shift oscillator | \(f_0=\frac{1}{2\pi RC\sqrt{6}}\) |
+| Colpitts equivalent capacitance | \(C_{eq}=\frac{C_1C_2}{C_1+C_2}\) |
+| Colpitts frequency | \(f_0=\frac{1}{2\pi\sqrt{LC_{eq}}}\) |
+| Hartley equivalent inductance | \(L_{eq}=L_1+L_2+2M\) |
+| Barkhausen amplitude condition | \(|A\beta|\geq 1\) |
+| Barkhausen phase condition | \(\angle A\beta=0^\circ \text{ or } 360^\circ\) |
+| PLL phase detector frequency | \(f_{PFD}=\frac{f_{REF}}{R}\) |
+| PLL VCO frequency | \(f_{VCO}=Nf_{PFD}\) |
+| PLL output divider | \(f_{out}=\frac{f_{VCO}}{P}\) |
+| VCO tuning slope | \(f_{out}=f_0+K_{VCO}V_{tune}\) |
+
+---
+
+## 2. DESIGN PROCEDURE (Step-by-Step)
+
+1. **Define system specifications**
+   - Audio band: \(20\,Hz-20\,kHz\)
+   - RF band: target \(f_{RF}\), channel bandwidth, modulation, sensitivity, range.
+   - Supply voltage, current limit, battery life.
+   - Source impedance and load impedance.
+   - Required gain, output power, SNR, THD, NF, IIP3, P1dB.
+
+2. **Convert specifications into numerical budgets**
+   - Required voltage gain:
+     \[
+     A_v=\frac{V_{out,required}}{V_{in,expected}}
+     \]
+   - Required output power:
+     \[
+     P_{out}=\frac{V_{rms}^2}{R_L}
+     \]
+   - Receiver sensitivity:
+     \[
+     S_{dBm}=-174+10\log_{10}(B)+NF+SNR_{req}
+     \]
+   - Dynamic range:
+     \[
+     DR=P_{max}-N_{floor}
+     \]
+
+3. **Create block diagram**
+   - Audio receive path:
+     \[
+     \text{Mic/Sensor} \rightarrow \text{Bias/Protection} \rightarrow \text{Preamp} \rightarrow \text{Filter} \rightarrow \text{ADC/Driver/PA}
+     \]
+   - Audio transmit path:
+     \[
+     \text{DAC/MCU} \rightarrow \text{Filter} \rightarrow \text{Volume/Driver} \rightarrow \text{Power Amp} \rightarrow \text{Speaker}
+     \]
+   - RF receive path:
+     \[
+     \text{Antenna} \rightarrow \text{ESD/Filter} \rightarrow \text{LNA} \rightarrow \text{RF Filter} \rightarrow \text{Mixer} \rightarrow \text{IF/Baseband Filter} \rightarrow \text{ADC/Demodulator}
+     \]
+   - RF transmit path:
+     \[
+     \text{Modulator/Synthesizer} \rightarrow \text{Driver Amp} \rightarrow \text{PA} \rightarrow \text{Filter} \rightarrow \text{Antenna}
+     \]
+
+4. **Choose topology**
+   - Audio preamp: non-inverting, inverting, instrumentation, differential.
+   - Audio power amp: class A, class AB, class D, BTL.
+   - RF front-end: LNA + mixer, direct conversion, low-IF, superheterodyne, transceiver IC.
+   - Filter type: passive RC, active op-amp, LC, SAW/BAW/ceramic.
+
+5. **Set bias and headroom**
+   - Set quiescent current.
+   - Verify output swing:
+     \[
+     V_{out,pk}<V_{supply}-V_{headroom}
+     \]
+   - For op-amps, verify input common-mode range and output swing.
+   - For RF, verify LNA/mixer/PA compression limits.
+
+6. **Allocate gain**
+   - Put first gain stage after source with lowest noise contribution.
+   - Avoid excessive early gain that reduces dynamic range.
+   - Ensure no stage clips:
+     \[
+     V_{stage,out,pk}<V_{stage,max}
+     \]
+
+7. **Design frequency response**
+   - Choose high-pass coupling:
+     \[
+     f_c\leq \frac{f_{min}}{10}
+     \]
+   - Choose low-pass anti-alias or bandwidth limiting:
+     \[
+     f_c<B
+     \]
+   - Choose RF band-pass/selectivity around desired channel.
+   - Check op-amp GBW and slew rate.
+
+8. **Calculate noise budget**
+   - Use Friis cascade formula:
+     \[
+     F_{tot}=F_1+\frac{F_2-1}{G_1}+\cdots
+     \]
+   - Minimize loss before LNA.
+   - Keep audio resistor values low enough to avoid Johnson noise dominance.
+
+9. **Calculate linearity and dynamic range**
+   - Verify P1dB and OIP3 margins.
+   - For RF:
+     \[
+     P_{IM3,out}=3P_{out,fund}-2OIP3
+     \]
+   - Ensure strong interferers do not saturate LNA/mixer/ADC.
+
+10. **Design impedance matching**
+   - Audio: usually low output impedance, high input impedance.
+   - RF: use \(50\,\Omega\) controlled impedance.
+   - Calculate matching network using L-network, Pi-network, T-network, transformer, or quarter-wave section.
+
+11. **Check stability**
+   - Audio:
+     - Op-amp phase margin.
+     - Capacitive load isolation.
+     - Power amp oscillation prevention.
+   - RF:
+     \[
+     K>1,\quad |\Delta|<1
+     \]
+   - Add decoupling, series resistors, ferrites, neutralization, or attenuators if unstable.
+
+12. **Design power and thermal system**
+   - Calculate \(P_D\).
+   - Select heatsink:
+     \[
+     R_{\theta SA}\leq \frac{T_{j,max}-T_A}{P_D}-R_{\theta JC}-R_{\theta CS}
+     \]
+   - Add thermal vias/pads for RF PAs and class-D amplifiers.
+
+13. **Simulate**
+   - SPICE for audio bias, gain, noise, distortion.
+   - AC analysis for frequency response.
+   - Transient analysis for clipping and slew rate.
+   - RF simulator/VNA model for S-parameters, matching, NF, gain, IP3.
+
+14. **Prototype**
+   - Use PCB for RF above a few MHz.
+   - Avoid solderless breadboards for RF matching networks.
+   - Add test points for input, output, bias, supply, and RF nodes.
+
+15. **Measure and debug**
+   - Audio: oscilloscope, audio analyzer, THD meter, Bode plot.
+   - RF: VNA, spectrum analyzer, power meter, noise figure analyzer.
+   - Compare measured gain, bandwidth, noise, return loss, output power.
+
+16. **Final component selection**
+   - Select E-series resistor/capacitor values.
+   - Apply voltage, current, power, temperature, tolerance, and RF parasitic derating.
+   - Freeze BOM with manufacturer part numbers, package, tolerance, voltage rating, and footprint.
+
+---
+
+## 3. STANDARD IC / MODULE REFERENCE
+
+### 3.1 Audio ICs and Modules
+
+| IC / Module | Function | Pinout Summary | Key Specifications / Use |
+|---|---|---|---|
+| LM358 | Dual op-amp | 8-pin: OUT1, IN1−, IN1+, GND, IN2+, IN2−, OUT2, V+ | Single-supply, low-cost, GBW ≈ 1 MHz, SR ≈ 0.3 V/µs |
+| TLV9062 | Rail-to-rail dual op-amp | 8-pin dual op-amp pinout similar to LM358 | 3.3 V/5 V audio sensors, GBW ≈ 10 MHz |
+| TL072 / TL074 | JFET-input audio op-amp | Dual: OUT, IN−, IN+, GND, IN+, IN−, OUT, V+ | Low input bias current, GBW ≈ 3 MHz, SR ≈ 13 V/µs |
+| NE5532 / NE5534 | Low-noise audio op-amp | Dual pinout same as TL072 | Low noise ≈ 5 nV/√Hz, GBW ≈ 10 MHz, hi-fi preamps |
+| OPA2134 | Low-distortion audio op-amp | Dual audio op-amp pinout | Low THD, GBW ≈ 8 MHz, SR ≈ 20 V/µs |
+| OPA1612 | Precision audio op-amp | Dual op-amp pinout | Very low noise ≈ 1.1 nV/√Hz, GBW ≈ 40 MHz |
+| INA128 | Instrumentation amplifier | +IN, −IN, OUT, REF, RG pins, ±Vs, GND | Gain \(1+50k/R_G\), balanced mic/sensor input |
+| AD620 | Instrumentation amplifier | +IN, −IN, OUT, REF, RG pins, ±Vs, GND | Gain \(1+49.4k/R_G\), low-power precision input |
+| MAX9814 | Electret mic preamp with AGC | VDD, GND, MIC_IN, OUT, GAIN, AGC capacitor, EN, MIC_BIAS | 2.7–5.5 V, gain 40/50/60 dB, automatic gain control |
+| ADMP401 | Analog MEMS microphone | VDD, GND, OUT, L/R select | 3.3 V, sensitivity ≈ −38 dBV, analog output |
+| ICS-43434 | Digital PDM MEMS microphone | VDD, GND, SCK, WS, SD, L/R | PDM output, sensitivity ≈ −26 dBFS |
+| LM386 | Low-voltage audio power amplifier | IN−, IN+, GND, OUT, VCC, gain pins, bypass | 4–12 V, 0.3–1 W, 4–16 Ω speaker |
+| PAM8403 | Stereo class-D amplifier | PVDD, AVDD, GND, INL±, INR±, OUTL±, OUTR±, SD/MODE | 2.5–5.5 V, ≈ 3 W/ch into 4 Ω |
+| TPA3116D2 | Stereo class-D amplifier | PVCC, GVCC, GND, INA/B, OUTP/N A/B, FAULT, SD, gain pins | 5.5–27 V, ≈ 15 W/ch into 8 Ω, BTL mono option |
+| TPA3255 | High-power class-D amplifier | PVDD, GVDD, inputs, bridge outputs, FAULT, OTW, CLIP, SD | Up to 53.5 V, high-power stereo/BTL audio |
+| MAX98357A | I2S input class-D amplifier | VDD, GND, BCLK, LRCLK, DIN, SD_MODE, OUTP, OUTN, FS | I2S digital audio, 2.5–5.5 V, ≈ 3.2 W into 4 Ω |
+| PCM2704 | USB audio DAC | USB D+/D−, V5, V33, GND, XTAL, LOUT, ROUT | 16-bit, 48 kHz USB audio output |
+| PCM1802 | Stereo audio ADC | VINL/R, VCC, GND, SCKI, LRCK, BCK, DATA, FMT | 24-bit, up to 96 kHz audio input |
+| RDA5807M Module | FM receiver module | VCC, GND, SCL, SDA, LOUT, ROUT, ANT | FM 76–108 MHz, I2C control |
+| SI4703 / SI4735 Module | FM/AM receiver module | VDD, GND, I2C/SPI pins, audio L/R, antenna | Integrated radio demodulator, low external parts |
+
+---
+
+### 3.2 RF ICs and Modules
+
+| IC / Module | Function | Pinout Summary | Key Specifications / Use |
+|---|---|---|---|
+| NE602 / SA612 | Mixer + oscillator | RF IN1, RF IN2, GND, mixer OUT, bias, OSC IN, OSC OUT, VCC | Double-balanced mixer, oscillator, up to ≈ 200 MHz |
+| ADF4351 | Fractional-N PLL/VCO | VDD, GND, CE, LE, CLK, DATA, MUXOUT, RFOUTA±, RFOUTB± | 35 MHz–4.4 GHz, SPI, RF synthesizer |
+| Si5351 | I2C clock generator | VDD, GND, SCL, SDA, OE pins, CLK0–CLK2, crystal pins | 8 kHz–200 MHz, useful LO/clock source |
+| CC1101 | Sub-GHz transceiver | VDD, GND, SCLK, SI, SO, CSn, GDO0/2, RF_P/N, XOSC | 300–928 MHz, FSK/GFSK/OOK, up to ≈ +12 dBm |
+| nRF24L01+ | 2.4 GHz transceiver | VDD, GND, CE, CSN, SCK, MOSI, MISO, IRQ, antenna | 2.4 GHz, 2 Mbps, ≈ +3.5 dBm |
+| SX1276 / SX1278 | LoRa transceiver | VDD, GND, SCK, MISO, MOSI, NSS, RESET, DIO0–DIO5, ANT | 137–1020 MHz, LoRa/FSK, up to +20 dBm |
+| ESP32-WROOM | Wi-Fi/BT module | 3V3, GND, EN, GPIO, UART/SPI, RF_IO/U.FL | 2.4 GHz Wi-Fi/BT, 50 Ω RF port |
+| NEO-M8N | GNSS receiver module | VCC, GND, TX, RX, RF_IN 50 Ω, BBACKUP, PPS | GPS/GLONASS, 1.575 GHz RF input |
+| SI4703 | FM receiver IC | VDD, GND, I2C pins, RCLK, GPIO, L/R audio, antenna | FM 76–108 MHz, stereo demodulation |
+| SI4735 | AM/FM/SW receiver IC | VDD, GND, I2C/SPI pins, audio outputs, antenna | Multi-band broadcast receiver |
+| AD9361 | SDR transceiver | RF1P/N, RF2P/N, LVDS/CMOS data, clocks, SPI, enables, supplies | 70 MHz–6 GHz, 2×2 MIMO, wideband SDR |
+| ADL5801 | Active RF mixer | RFIP/RFIM, LOIP/LOIM, IFOP/IFOM, VPS, GND, EN | High IIP3 mixer, hundreds of MHz to GHz |
+| LT5560 | Active RF mixer | RF differential, LO differential, IF differential, VCC, GND | High-linearity RF downconversion |
+| BGA2712 | Broadband MMIC LNA | RF_IN, RF_OUT, VDD/bias, GND/thermal pad | 50 MHz–6 GHz, gain ≈ 13 dB, high linearity |
+| PGA-103+ | Broadband MMIC amplifier | RF_IN, RF_OUT, VDD, GND | DC–4 GHz, gain ≈ 15 dB |
+| MAR-6+ | Broadband MMIC amplifier | RF_IN, RF_OUT, VDD, GND | DC–1 GHz, gain ≈ 12 dB |
+| SKY65017 / RFPA Modules | RF power amplifier/FEM | RF_IN, RF_OUT, VCC/PA_BIAS, EN/control, GND/thermal pad | Cellular/sub-GHz PA, +30 dBm class output |
+| AD8307 | Log detector/RSSI | RF_IN, OUT, INT/SLOPE, VPOS, VNEG/GND | 0.1–500 MHz, ≈ 92 dB dynamic range |
+| AD8318 | Log detector/RSSI | RF_IN, OUT, slope/intercept pins, supply, GND | 1 MHz–8 GHz, ≈ 60 dB dynamic range |
+| Mini-Circuits ZFL Series | RF LNA modules | IN, OUT, GND, VCC if active | 50 Ω, fixed gain, low-noise RF amplification |
+| Mini-Circuits LFCN/HFCN/SAW Filters | RF filters | IN, OUT, GND | Fixed low-pass/high-pass/band-pass, 50 Ω |
+| Mini-Circuits Attenuators | RF attenuators | IN, OUT, GND | 0–20 dB, 50 Ω, improve match/isolation |
+
+---
+
+## 4. COMPONENT SELECTION THRESHOLDS
+
+### 4.1 Resistor Selection
+
+| Parameter | Rule |
+|---|---|
+| Standard series | E24 for biasing, E96 for gain/filter accuracy |
+| Audio gain resistors | Use 0.1–1% metal film for accurate gain |
+| RF terminations | Use 49.9 Ω or 50 Ω, 1%, thin-film RF resistors |
+| High-impedance audio nodes | Avoid \(>1\,M\Omega\) unless FET/CMOS input is used |
+| Low-noise audio | Keep source/gain resistance typically \(<100\,k\Omega\) |
+| Power rating | \(P_R=I^2R\); choose rating \(\geq 2P_R\) |
+| Voltage derating | Operating voltage \(\leq 50\%\) of resistor voltage rating |
+| Temperature derating | Use derating curve above \(70^\circ C\) |
+| RF power resistors | Choose RF-rated attenuators/terminations, not wirewound unless non-inductive |
+
+---
+
+### 4.2 Capacitor Selection
+
+| Parameter | Rule |
+|---|---|
+| Audio coupling capacitor | \(C\geq \frac{1}{2\pi f_{min}R_{in}}\) |
+| Coupling cutoff target | \(f_c\leq f_{min}/10\) |
+| Op-amp supply decoupling | 100 nF ceramic within 5 mm of supply pin |
+| Bulk audio decoupling | 10–100 µF near amplifier supply |
+| RF decoupling | Parallel 100 pF, 1 nF, 100 nF, 1–10 µF near IC supply |
+| Audio signal path | Prefer film, C0G/NP0, or low-distortion types |
+| Bulk storage | Electrolytic/tantalum allowed away from signal path |
+| RF matching | Use C0G/NP0, high-Q, 1–5% tolerance |
+| RF SRF requirement | Capacitor self-resonant frequency \(\geq 3–5\times f_{op}\) |
+| Voltage rating | \(V_{rating}\geq 2(V_{DC}+V_{AC,pk})\) |
+| X7R/X5R derating | Expect 30–80% capacitance loss under DC bias |
+| High-gain audio | Avoid microphonic ceramics near input stage |
+
+---
+
+### 4.3 Inductor Selection
+
+| Parameter | Rule |
+|---|---|
+| RF inductor SRF | \(SRF\geq 3–5\times f_{op}\) |
+| RF matching inductors | Use high-Q, low-ESR RF inductors |
+| Tolerance | 1–2% for precision RF, 5–10% acceptable for broadband |
+| Current rating | \(I_{SAT}, I_{RMS}\geq 2\times\) expected peak current |
+| Audio power inductors | Saturation current above maximum load current |
+| Class-D output filter | Use shielded power inductors with low DCR |
+| EMI-sensitive circuits | Use shielded inductors and keep away from RF input |
+
+---
+
+### 4.4 IC Selection Thresholds
+
+| Block | Selection Rule |
+|---|---|
+| Audio op-amp GBW | \(GBW\geq 10\times f_{max}\times A_{noise}\) |
+| Audio op-amp slew rate | \(SR\geq 3\times 2\pi f_{max}V_{pk}\) |
+| Audio op-amp output current | \(I_{out,max}\geq 2\times V_{pk}/R_L\) |
+| Instrumentation amplifier | Choose gain range, CMRR, input noise, input bias current |
+| Electret mic preamp | Bias current typically 0.2–1 mA |
+| LNA | NF, gain 10–20 dB, P1dB/OIP3 above interferer level, stable \(K>1\) |
+| Mixer | Match required LO drive: +7, +10, +13 dBm common levels |
+| Mixer linearity | IIP3 and P1dB above expected RF/interferer levels |
+| PLL/VCO | Tuning range covers LO, phase noise meets system budget |
+| RF PA | \(P_{out}\) at least 3–6 dB above required antenna power |
+| Class-D amplifier | Verify LC filter, EMI, supply decoupling, speaker wiring |
+| ADC driver | Bandwidth, settling time, noise, distortion, output common-mode compatibility |
+
+---
+
+### 4.5 Power, Voltage, Current, and Thermal Derating
+
+| Component | Threshold |
+|---|---|
+| Resistor power | Rating \(\geq 2\times\) calculated dissipation |
+| Capacitor voltage | Rating \(\geq 2\times\) working DC + AC peak |
+| Diode reverse voltage | \(V_{RRM}\geq 2\times\) maximum reverse voltage |
+| Diode current | \(I_F\geq 2\times\) expected average/peak current |
+| MOSFET drain-source voltage | \(V_{DS,max}\geq 2\times\) maximum rail voltage |
+| BJT collector-emitter voltage | \(V_{CEO}\geq 2\times\) maximum rail voltage |
+| Conductor current | Current rating \(\geq 1.5–2\times\) expected current |
+| Semiconductor junction temperature | Design \(T_j\leq 125^\circ C\) for \(150^\circ C\) max parts |
+| Heatsink selection | \(R_{\theta SA}\leq \frac{T_{j,max}-T_A}{P_D}-R_{\theta JC}-R_{\theta CS}\) |
+| PCB copper temperature | Increase copper area/vias for audio PA, RF PA, class-D stages |
+
+---
+
+### 4.6 Tolerance and Stability Guidelines
+
+| Application | Tolerance Guideline |
+|---|---|
+| Audio gain setting | 0.1–1% resistor ratio |
+| Audio filters | 1% resistors, 2–5% capacitors |
+| RF matching | 1% C0G capacitors, 2–5% RF inductors |
+| RF 50 Ω networks | 1% thin-film resistors |
+| Decoupling capacitors | 10–20% tolerance acceptable |
+| Temperature coefficient, audio | 25–100 ppm/°C metal film |
+| Temperature coefficient, RF | C0G/NP0, 0/±30 ppm/°C |
+| Breadboard use | Avoid for RF matching above a few MHz due to pF/nH parasitics |
+
+---
+
+## 5. BREADBOARD & PCB TROUBLESHOOTING
+
+| Failure | Symptom | Probable Cause | Test Method | Fix |
+|---|---|---|---|---|
+| Grounding/shielding failure | 50/60 Hz hum, buzzing, RF hash, noisy mic input | Ground loop, shared return current, poor shielding, bad supply filtering | Short input to ground; measure noise spectrum; probe ground voltage differences | Star ground, shielded twisted pair, separate analog/RF/digital returns, add bulk + ceramic decoupling |
+| Oscillation/instability | Audio squeal, ultrasonic oscillation, unexpected RF tone, overheating | Poor decoupling, capacitive load, feedback through ground/supply, RF amplifier unstable | Oscilloscope 10× probe, spectrum analyzer, VNA S-parameters, check \(K\) | Local decoupling, series output resistor, ferrite bead, ground plane, stability network, 50 Ω termination |
+| No output, low gain, clipping | Distorted audio, flat RF output, gain lower than expected | Wrong bias, saturation, insufficient supply headroom, wrong feedback, coupling capacitor too small | Measure DC bias; inject sine wave stage-by-stage; compare AC gain | Recalculate bias, increase supply voltage, reduce gain, correct feedback network, resize coupling capacitors |
+| Poor frequency response | Muffled audio, missing bass/treble, shifted RF center frequency | Wrong RC/LC values, capacitor ESR/leakage, op-amp GBW/SR limit, inductor SRF | Bode plot, audio sweep, VNA S21/S11 | Correct component values, use C0G/film capacitors, choose higher-GBW op-amp, use RF inductors with adequate SRF |
+| RF mismatch/low range | Low sensitivity, poor range, high SWR, PA overheating | 50 Ω discontinuity, breadboard parasitics, wrong antenna, bad matching network, solder/connector fault | VNA return loss, power meter, spectrum analyzer, thermal camera | Use controlled-impedance PCB, correct matching network, proper antenna placement, quality connectors, add isolator/circulator if needed |
+
+---
+
+## 6. VIVA & INTERVIEW TRAPS
+
+| Question | Correct Answer |
+|---|---|
+| If an LNA has 40 dB gain, does receiver sensitivity improve by 40 dB? | No. Sensitivity is limited by noise figure, bandwidth, and required SNR: \(S=-174+10\log B+NF+SNR_{req}\). LNA gain reduces the effect of later-stage noise but does not remove input thermal noise. Excess gain can reduce dynamic range and cause compression. |
+| Why is the first loss before an LNA so important? | Friis noise formula shows the first stage dominates: \(F_{tot}=F_1+(F_2-1)/G_1+\cdots\). A 3 dB loss before the LNA adds 3 dB noise figure directly and reduces signal power before amplification. |
+| Why does RF use 50 Ω matching while audio usually uses high input impedance? | RF wavelengths are comparable to PCB trace lengths, so uncontrolled impedance causes reflections, standing waves, and power loss. Audio wavelengths are very long, so audio systems usually prioritize voltage transfer: low output impedance and high input impedance. |
+| An op-amp has enough GBW for 20 kHz audio. Is that sufficient? | Not necessarily. Slew rate must also satisfy \(SR\geq 2\pi fV_{pk}\). A 10 Vpp, 20 kHz sine requires \(SR\approx1.26\,V/\mu s\), plus margin. Output current, distortion, supply headroom, and capacitive load stability must also be checked. |
+| For a mixer with \(f_{RF}=100\,MHz\) and \(f_{IF}=10\,MHz\), where is the image frequency? | If \(f_{LO}=f_{RF}-f_{IF}=90\,MHz\), the image is \(f_{RF}-2f_{IF}=80\,MHz\). If \(f_{LO}=f_{RF}+f_{IF}=110\,MHz\), the image is \(f_{RF}+2f_{IF}=120\,MHz\). An RF pre-filter or image-reject architecture is required. |
+| Why are class-D amplifiers efficient but difficult in mixed audio/RF systems? | Class-D amplifiers switch at high frequency, producing harmonics and EMI. They need output LC filtering, tight PCB layout, supply decoupling, and separation from sensitive mic, ADC, LNA, or RF input circuits. |

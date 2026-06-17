@@ -1,0 +1,154 @@
+## 1. CORE CONCEPTS & ARCHITECTURE  
+| Block | Description | Typical Register | Bus Width | Key Parameters |
+|-------|-------------|------------------|-----------|----------------|
+| Sensor Interface | Converts physical quantity to electrical signal | `CTRL_REG`, `STATUS_REG`, `DATA_REG` | 8–32 bits | Sampling rate, resolution, gain |
+| ADC | Analog‑to‑Digital Converter | `ADC_CFG`, `ADC_DATA` | 12–24 bits | Reference voltage, input range |
+| Comparator | Threshold detection | `CMP_CFG`, `CMP_OUT` | 1 bit | Hysteresis, polarity |
+| PWM Driver | Generates duty‑cycle controlled voltage | `PWM_DUTY`, `PWM_CFG` | 8–16 bits | Frequency, dead‑time |
+| Communication Bus | Transfers data between MCU and sensor | `I2C_ADDR`, `SPI_CS`, `UART_BAUD` | 8/16/32 bits | Clock speed, data framing |
+| Power Management | Supplies regulated rails | `VDD_REG`, `VDD_STATUS` | N/A | Voltage levels, current limits |
+
+**Operating Principles**  
+- Sensors output analog voltage/current → ADC samples → digital value stored in `DATA_REG`.  
+- PWM drivers modulate output voltage using duty cycle.  
+- Comparators trigger interrupts when threshold crossed.  
+- Communication buses (I2C/SPI/UART) use standard framing and error detection.
+
+---
+
+## 2. PINOUT RULES & GPIO MAPPING  
+| MCU Pin | Functionality | PWM | ADC | Interrupt | I²C | SPI | UART | Voltage Logic |
+|---------|---------------|-----|-----|-----------|-----|-----|------|----------------|
+| PA0 | General GPIO | No | Yes | Yes | No | No | No | 3.3 V |
+| PA1 | General GPIO | Yes | No | No | No | No | No | 3.3 V |
+| PB0 | I²C SDA | No | No | No | Yes | No | No | 3.3 V (open‑drain) |
+| PB1 | I²C SCL | No | No | No | Yes | No | No | 3.3 V (open‑drain) |
+| PC0 | SPI MOSI | No | No | No | No | Yes | No | 3.3 V |
+| PC1 | SPI MISO | No | No | No | No | Yes | No | 3.3 V |
+| PC2 | SPI SCK | No | No | No | No | Yes | No | 3.3 V |
+| PC3 | SPI CS | No | No | No | No | Yes | No | 3.3 V |
+| PD0 | UART TX | No | No | No | No | No | Yes | 3.3 V |
+| PD1 | UART RX | No | No | No | No | No | Yes | 3.3 V |
+
+**Voltage Tolerances**  
+- Most MCU pins are 3.3 V tolerant.  
+- 5 V logic must be level‑shifted or use 5 V‑tolerant pins.  
+- Pull‑up resistors for I²C: 4.7 kΩ (typical).  
+- SPI CS: active low, pull‑up 10 kΩ.
+
+---
+
+## 3. STANDARD INITIALIZATION ALGORITHMS  
+### 3.1 ADC Initialization (12‑bit, 1 MHz)  
+```c
+// Enable clock to ADC peripheral
+CLK_EnablePeripheral(CLK_PERIPH_ADC);
+
+// Configure ADC reference and resolution
+ADC_ConfigType adc_cfg = {
+    .ref = ADC_REF_VDD,
+    .resolution = ADC_RES_12BIT,
+    .sample_rate = 1e6
+};
+ADC_Init(ADC0, &adc_cfg);
+
+// Enable ADC channel 0 (PA0)
+ADC_EnableChannel(ADC0, 0, true);
+
+// Start conversion
+ADC_Start(ADC0);
+```
+
+### 3.2 PWM Initialization (1 kHz, 50 % duty)  
+```c
+PWM_ConfigType pwm_cfg = {
+    .frequency = 1000,          // 1 kHz
+    .duty_cycle = 50,           // 50%
+    .dead_time = 0
+};
+PWM_Init(PWM1, &pwm_cfg);
+PWM_Enable(PWM1);
+```
+
+### 3.3 I²C Master Init (100 kHz)  
+```c
+I2C_ConfigType i2c_cfg = {
+    .mode = I2C_MODE_MASTER,
+    .speed = 100e3,
+    .address = 0x00
+};
+I2C_Init(I2C1, &i2c_cfg);
+I2C_Enable(I2C1);
+```
+
+### 3.4 SPI Slave Init (8‑bit, MSB first)  
+```c
+SPI_ConfigType spi_cfg = {
+    .mode = SPI_MODE_SLAVE,
+    .bit_order = SPI_BIT_ORDER_MSB,
+    .data_size = 8
+};
+SPI_Init(SPI1, &spi_cfg);
+SPI_Enable(SPI1);
+```
+
+### 3.5 UART Init (115200 baud, 8N1)  
+```c
+UART_ConfigType uart_cfg = {
+    .baudrate = 115200,
+    .databits = UART_DATABITS_8,
+    .parity   = UART_PARITY_NONE,
+    .stopbits = UART_STOPBITS_1
+};
+UART_Init(UART0, &uart_cfg);
+UART_Enable(UART0);
+```
+
+---
+
+## 4. INTERFACING TABLES  
+| MCU Pin | Component Pin | Function | Pull‑Up/Down | Decoupling |
+|---------|---------------|----------|--------------|------------|
+| PA0 | A0 | ADC input | None | 0.1 µF to VDD |
+| PA1 | PWM_OUT | PWM | None | 0.1 µF to VDD |
+| PB0 | SDA | I²C data | 4.7 kΩ to VDD (if external) | 0.1 µF to VDD |
+| PB1 | SCL | I²C clock | 4.7 kΩ to VDD | 0.1 µF to VDD |
+| PC0 | MOSI | SPI data out | None | 0.1 µF to VDD |
+| PC1 | MISO | SPI data in | None | 0.1 µF to VDD |
+| PC2 | SCK | SPI clock | None | 0.1 µF to VDD |
+| PC3 | CS | SPI chip select | 10 kΩ pull‑up | 0.1 µF to VDD |
+| PD0 | TX | UART transmit | None | 0.1 µF to VDD |
+| PD1 | RX | UART receive | None | 0.1 µF to VDD |
+
+**Decoupling Placement**  
+- Place 0.1 µF ceramic capacitor between VDD and GND as close as possible to each peripheral’s power pin.  
+- For high‑speed signals (SPI, UART), add 10 pF series resistor to reduce ringing.
+
+---
+
+## 5. COMMON MISTAKES & HARDWARE FAULTS  
+| Symptom | Root Cause | Fix |
+|---------|------------|-----|
+| ADC reads 0xFFF constantly | ADC pin left floating | Connect sensor output or pull‑down resistor |
+| PWM output stuck at 0 % | PWM clock disabled | Enable peripheral clock and set `PWM_Enable` |
+| I²C bus stuck on SDA/SCL | Shorted or missing pull‑ups | Add 4.7 kΩ pull‑ups, check for shorts |
+| SPI slave not receiving data | CS line not asserted | Ensure CS is low during transfer, add pull‑up |
+| UART receives garbage | Clock mismatch | Verify baud rate, use correct UART divider |
+
+---
+
+## 6. VIVA & INTERVIEW TRAPS  
+1. **Question:** Explain the difference between open‑drain and push‑pull outputs and when to use each.  
+   **Answer:** Open‑drain can only pull low; requires external pull‑up. Used for I²C, bus arbitration, level shifting. Push‑pull can source and sink; used for high‑speed signals like SPI, UART.  
+
+2. **Question:** How does ADC resolution affect quantization error?  
+   **Answer:** Quantization error ≈ LSB/√12. Higher resolution reduces error proportionally; 12‑bit LSB = Vref/4096.  
+
+3. **Question:** Why is a decoupling capacitor needed on a sensor’s power pin?  
+   **Answer:** It filters supply noise, provides local energy storage, reduces voltage droop during transients, improving signal integrity.  
+
+4. **Question:** Describe how to calculate the required SPI clock divider for a given peripheral speed.  
+   **Answer:** Divider = Fclk / (2 × desired_speed). Choose nearest integer; ensure peripheral supports that divider.  
+
+5. **Question:** What is the purpose of dead‑time in PWM drivers for H‑bridge motors?  
+   **Answer:** Prevents shoot‑through by ensuring both high and low side transistors are off during switching, avoiding short across supply.

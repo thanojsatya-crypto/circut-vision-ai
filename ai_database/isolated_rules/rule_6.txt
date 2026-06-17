@@ -1,0 +1,59 @@
+## 1. CORE FORMULAS & MATHEMATICS
+- Voltage Gain (Inverting): Av = –Rf / Rin  
+- Voltage Gain (Non‑Inverting): Av = 1 + (Rf / Rg)  
+- Power Delivered to Load: Pout = Vout² / RL  
+- Amplifier Efficiency: η = (Pout / Pin) × 100 %  - Small‑Signal Input Resistance: rin = (β + 1) · Re (for BJT)  
+- Small‑Signal Output Resistance: rout = ro + (β + 1) · RC (for BJT)  
+- Cut‑off Frequency (First‑order RC): fc = 1 / (2πRC)  
+- Gain‑Bandwidth Product (GBW): GBW = Av × fc  
+- Thermal Resistance: θja = (Tj – Ta) / Pd  
+- Maximum Power Dissipation: Pd(max) = VCC × IC – (VCE(sat) × IC)  
+
+## 2. DESIGN PROCEDURE (Step‑by‑Step)
+1. Define specifications: gain, bandwidth, supply voltage, quiescent current, output swing.  
+2. Select amplifier topology (e.g., common‑emitter, cascode, push‑pull).  
+3. Choose active device (transistor/FET) based on fT, power rating, and gain requirements.  
+4. Set bias point (Q‑point): calculate RB, RE, or gate bias to achieve desired IC and VCE.  
+5. Design bias network: compute divider ratios, include temperature compensation if needed.  
+6. Determine coupling and bypass capacitors: calculate fc to keep gain flat in band.  
+7. Design output stage: select load, transformer, or speaker impedance; size output capacitor.  
+8. Choose power supply: set VCC, add decoupling, consider current headroom.  
+9. Perform AC and DC simulation; iterate bias and component values.  
+10. Select final discrete components (resistors, capacitors, inductors) meeting thresholds.  
+
+## 3. STANDARD IC / MODULE REFERENCE- **LM358** – Dual op‑amp, V+ to V‑ up to 32 V, output swing to within 1.5 V of rails.  
+- **TL072** – JFET input op‑amp, low bias current, bandwidth ≈ 10 MHz.  - **TDA2030A** – Audio power amplifier, 14 W RMS, supply 12‑44 V, pinout: 1‑GND, 2‑VCC, 3‑Input, 4‑Output, 5‑Feedback.  
+- **LM324** – Quadruple op‑amp, rail‑to‑rail output, supply 2.7‑36 V.  
+- **TIP31 / TIP32** – NPN/PNP power transistors, VCE(max) 60 V, Ic(max) 3 A.  - **IRF540** – N‑MOSFET, VDS 100 V, Id 33 A, gate charge 55 nC.  
+- **MCP6002** – Dual rail‑to‑rail op‑amp, supply 1.8‑6 V, bandwidth 1 MHz.  - **LM1889** – Audio pre‑amp IC, gain set by external resistor, pinout: 1‑Vin, 2‑Gain, 3‑Vout, 4‑GND.  
+
+## 4. COMPONENT SELECTION THRESHOLDS
+- **Resistor Power Rating**: Prated ≥ 2 × (Pd expected).  
+- **Resistor Voltage Rating**: Vr ≥ 1.5 × (Vmax across it).  
+- **Capacitor Voltage Rating**: Vc ≥ 1.5 × (Vmax in circuit).  
+- **Capacitor ESR**: ≤ 0.1 × |Z| at fc for coupling caps.  
+- **Inductor Current Rating**: Irms ≥ 1.2 × (Ic peak) for output filter.  
+- **Transistor VCE/VDE**: ≥ 1.5 × (VCE max or VDE max).  
+- **IC Power Dissipation**: Pd ≤ 0.8 × (Pd(max)) for reliability.  
+- **Tolerance**: ≤ 5 % for bias network resistors; ≤ 10 % for coupling caps.  
+- **Temperature Coefficient**: ≤ 100 ppm/°C for precision resistors in feedback loops.  
+
+## 5. BREADBOARD & PCB TROUBLESHOOTING
+1. **No Output** → Probable Cause: Open feedback loop or failed active device. → Test: Measure voltage at output pin with multimeter; check continuity of feedback network. → Fix: Repair/open loop or replace faulty transistor/IC.  2. **Distorted Output** → Probable Cause: Improper bias or insufficient decoupling. → Test: Probe bias voltages; check supply rails for ripple. → Fix: Adjust bias network or add decoupling capacitors.  
+3. **Thermal Shutdown** → Probable Cause: Excessive quiescent power dissipation. → Test: Measure case temperature; calculate Pd. → Fix: Add heatsink or reduce gain/load.  
+4. **Oscillation** → Probable Cause: Inadequate phase margin or stray inductance. → Test: Use oscilloscope on output; check loop gain. → Fix: Add small feedback resistor or increase compensation capacitor.  
+5. **Excessive Quiescent Current** → Probable Cause: Incorrect bias resistor values. → Test: Measure current through VCC pin. → Fix: Recalculate and adjust bias resistors to target Ib/Ich.  
+
+## 6. VIVA & INTERVIEW TRAPS
+1. **Q:** Explain the significance of Gain‑Bandwidth Product in a feedback amplifier.  
+   **A:** GBW defines the frequency at which the open‑loop gain drops to 1; it sets the trade‑off between gain and bandwidth in a feedback configuration.  
+
+2. **Q:** Why is thermal runaway a concern in bipolar power amplifiers, and how can it be mitigated?  
+   **A:** As temperature rises, VBE drops, causing increased collector current, which raises temperature further; mitigation includes emitter degeneration, heat‑sink design, and current limiting.  
+
+3. **Q:** How does the Miller effect influence the bandwidth of a common‑emitter stage?  
+   **A:** The Miller effect multiplies the feedback capacitance by (1‑Av), effectively increasing the input capacitance and shifting the low‑frequency cutoff.  
+
+4. **Q:** What is the purpose of a bootstrap circuit in a high‑side driver?  
+   **A:** It provides a boosted gate/base drive voltage above the supply rail, enabling the high‑side transistor to switch fully on.  5. **Q:** Discuss the trade‑offs between class‑AB and class‑D amplification in terms of efficiency and distortion.  
+   **A:** Class‑AB offers low distortion with moderate efficiency (~50‑70 %); class‑D achieves higher efficiency (>90 %) but requires careful PWM filtering and can introduce switching distortion.

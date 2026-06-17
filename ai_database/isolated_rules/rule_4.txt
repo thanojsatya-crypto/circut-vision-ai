@@ -1,0 +1,102 @@
+## 1. CORE FORMULAS & MATHEMATICS
+
+**A. Ideal Op-Amp Constraints**
+- $V_+ = V_-$ (Virtual Short/Ground)
+- $I_{in+} = I_{in-} = 0$ (Infinite Input Impedance)
+- $A_{OL} = \infty$ (Open Loop Gain)
+
+**B. Inverting Amplifier**
+- Gain: $A_v = \frac{V_{out}}{V_{in}} = -\frac{R_f}{R_{in}}$
+- Input Impedance: $Z_{in} = R_{in}$
+- Output Voltage: $V_{out} = -V_{in} \left(\frac{R_f}{R_{in}}\right)$
+
+**C. Non-Inverting Amplifier**
+- Gain: $A_v = \frac{V_{out}}{V_{in}} = 1 + \frac{R_f}{R_1}$
+- Input Impedance: $Z_{in} \approx \infty$
+- Output Voltage: $V_{out} = V_{in} \left(1 + \frac{R_f}{R_1}\right)$
+
+**D. Summing Amplifier (Inverting)**
+- $V_{out} = -R_f \left(\frac{V_1}{R_1} + \frac{V_2}{R_2} + \dots + \frac{V_n}{R_n}\right)$
+
+**E. Differential Amplifier**
+- $V_{out} = \frac{R_f}{R_1} (V_2 - V_1)$ (Assuming $R_1 = R_2$ and $R_f = R_g$)
+- CMRR (Common Mode Rejection Ratio): $CMRR = 20 \log_{10} \left| \frac{A_d}{A_{cm}} \right|$
+
+**F. Integrator & Differentiator**
+- Integrator: $V_{out} = -\frac{1}{RC} \int V_{in} \, dt$
+- Differentiator: $V_{out} = -RC \frac{dV_{in}}{dt}$
+
+**G. Boundary Conditions & Limits**
+- Saturation: $V_{out(max)} \approx V_{CC} - 1.5\text{V}$ (Non-rail-to-rail)
+- Slew Rate: $SR = \left| \frac{dV_{out}}{dt} \right|_{max}$
+- Maximum Frequency: $f_{max} = \frac{SR}{2\pi V_{peak}}$
+
+---
+
+## 2. DESIGN ORDER OF OPERATIONS
+
+1. **Requirement Definition**: Define $V_{in(max)}$, $V_{out(desired)}$, and required Gain ($A_v$).
+2. **Topology Selection**: Select Inverting (for phase reversal/summing) or Non-Inverting (for high $Z_{in}$).
+3. **Power Supply Selection**: Choose $V_{CC}$ and $V_{EE}$ based on $V_{out(max)}$ to avoid clipping.
+4. **Resistor Calculation**:
+    - Fix one resistor (usually $R_{in}$ or $R_1$ between $1\text{k}\Omega$ and $100\text{k}\Omega$).
+    - Calculate the feedback resistor ($R_f$) using the gain formula.
+5. **Component Standardization**: Round calculated $R$ values to the nearest E24 standard value.
+6. **Verification**: Recalculate actual gain with standard values to check error percentage.
+7. **Stability Check**: For integrators, calculate the saturation time constant $\tau = RC$.
+
+---
+
+## 3. STANDARD VALUES & PARAMETERS
+
+- **Supply Voltages**: $\pm 12\text{V}$, $\pm 15\text{V}$ (Standard), $\pm 5\text{V}$ (Low power).
+- **Resistor Ranges**: $1\text{k}\Omega$ to $1\text{M}\Omega$ (Avoid $< 100\Omega$ to prevent output loading; avoid $> 10\text{M}\Omega$ to prevent noise/bias current errors).
+- **Standard ICs**: $\mu\text{A}741$ (General purpose), TL081/TL082 (JFET input), LM358 (Single supply).
+- **Input Offset Voltage**: Typical $1\text{mV}$ to $5\text{mV}$.
+- **Input Bias Current**: Typical $10\text{nA}$ (FET) to $100\text{nA}$ (Bipolar).
+
+---
+
+## 4. PRACTICAL COMPONENT SELECTION RULES
+
+- **Resistors**: Use Metal Film resistors (1% tolerance) for gain precision; Carbon composition is avoided due to noise.
+- **Capacitors**:
+    - **Ceramic**: For high-frequency decoupling (0.1$\mu$F) near power pins.
+    - **Electrolytic**: For bulk power supply filtering (10$\mu$F - 100$\mu$F).
+    - **Polypropylene/Mylar**: For integrator timing capacitors (low leakage).
+- **Power**: $1/4\text{W}$ resistors are sufficient for signal paths; $1/2\text{W}$ for power-related components.
+- **IC Selection**:
+    - Use $\mu\text{A}741$ for basic lab demos.
+    - Use TL08x series for high-impedance sensors.
+    - Use LM358 for battery-operated/single-supply circuits.
+
+---
+
+## 5. COMMON MISTAKES & TROUBLESHOOTING
+
+| Symptom | Likely Cause | Corrective Action |
+| :--- | :--- | :--- |
+| Output stuck at $V_{CC}$ or $V_{EE}$ | Op-amp is saturated or missing power supply | Check $\pm V_{CC}$ connections; check for open-circuit feedback loop. |
+| Output is a flat line (0V) | Floating input or incorrect grounding | Ensure non-inverting pin is grounded for inverting config. |
+| High-frequency oscillation | Lack of decoupling capacitors | Add $0.1\mu\text{F}$ ceramic caps from $V_{CC}$ to GND and $V_{EE}$ to GND. |
+| Output clips prematurely | $V_{out}$ exceeds supply rails | Increase supply voltage or decrease gain. |
+| DC offset at output | Input bias current mismatch | Add a compensation resistor $R_c = R_1 \parallel R_f$ to the non-inverting input. |
+
+---
+
+## 6. VIVA & INTERVIEW TRAPS
+
+**Q1: Why is the "Virtual Ground" not a real ground?**
+**A:** It is a point that is at the same potential as ground due to the extremely high open-loop gain, but it cannot sink current. Connecting a physical wire to it will destroy the gain.
+
+**Q2: What happens if the feedback loop is opened in a closed-loop amplifier?**
+**A:** The circuit becomes an open-loop comparator. The output will immediately saturate to either $+V_{sat}$ or $-V_{sat}$ for any non-zero input.
+
+**Q3: Why is a compensation resistor added to the non-inverting terminal of an inverting amp?**
+**A:** To cancel the effect of input bias currents, which otherwise create a DC offset voltage at the output.
+
+**Q4: Can an Op-Amp provide infinite current?**
+**A:** No. It is limited by the internal output stage (typically $20\text{mA}$ to $40\text{mA}$). Exceeding this causes voltage drop and potential thermal failure.
+
+**Q5: What is the difference between Slew Rate and Bandwidth?**
+**A:** Bandwidth is the frequency range where gain is constant (small-signal). Slew Rate is the maximum rate of change of output voltage (large-signal), limiting the maximum frequency of large-amplitude signals.

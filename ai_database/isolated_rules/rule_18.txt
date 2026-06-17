@@ -1,0 +1,129 @@
+## 1. CORE FORMULAS & MATHEMATICS
+
+**Resolution (n-bit):**
+$Resolution = \frac{V_{ref}}{2^n}$
+
+**Quantization Error:**
+$Q_e = \pm \frac{1}{2} LSB = \pm \frac{V_{ref}}{2 \cdot 2^n}$
+
+**Signal-to-Noise Ratio (SNR) - Ideal ADC:**
+$SNR (dB) = 6.02n + 1.76$
+
+**Effective Number of Bits (ENOB):**
+$ENOB = \frac{SINAD (dB) - 1.76}{6.02}$
+
+**Sampling Rate (Nyquist Criterion):**
+$f_s \ge 2 \cdot f_{max}$
+
+**DAC Output Voltage (Weighted Resistor/R-2R):**
+$V_{out} = V_{ref} \cdot \sum_{i=1}^{n} \frac{b_i}{2^i}$ (where $b_i$ is the binary bit)
+
+**Settling Time:**
+$t_s = \tau \cdot \ln(\frac{1}{\epsilon})$ (where $\epsilon$ is the allowable error percentage)
+
+**Integral Non-Linearity (INL):**
+$INL = \text{Actual Transfer Function} - \text{Ideal Transfer Function}$
+
+**Differential Non-Linearity (DNL):**
+$DNL = \text{Actual Step Width} - \text{Ideal Step Width (1 LSB)}$
+
+---
+
+## 2. DESIGN PROCEDURE (Step-by-Step)
+
+1. **Requirement Definition:** Define input voltage range ($V_{min}$ to $V_{max}$), required precision (resolution in bits), and maximum signal frequency ($f_{max}$).
+2. **Architecture Selection:** 
+   - High Speed $\rightarrow$ Flash ADC.
+   - High Resolution/Medium Speed $\rightarrow$ SAR (Successive Approximation Register) ADC.
+   - Ultra-High Resolution/Low Speed $\rightarrow$ Sigma-Delta ($\Sigma\Delta$) ADC.
+3. **Reference Voltage Selection:** Select $V_{ref}$ based on the maximum input range to maximize dynamic range.
+4. **Anti-Aliasing Filter Design:** Calculate cutoff frequency $f_c$ where $f_{max} < f_c < \frac{f_s}{2}$. Implement low-pass filter (Butterworth or Chebyshev).
+5. **Input Conditioning:** Design voltage dividers or Op-Amp buffers to match input signal levels to the ADC input range.
+6. **Clock Generation:** Define sampling frequency $f_s$ and ensure jitter is minimized to prevent phase noise.
+7. **Interface Implementation:** Select communication protocol (SPI, I2C, Parallel) based on throughput requirements.
+8. **Component Selection:** Choose ICs based on ENOB, Power Consumption, and Package size.
+9. **Verification:** Calculate theoretical quantization noise and compare with datasheet SNR.
+
+---
+
+## 3. STANDARD IC / MODULE REFERENCE
+
+**ADC ICs:**
+- **ADS1115:** 16-bit $\Sigma\Delta$ ADC | I2C Interface | 4-channel | Low power.
+- **MCP3008:** 10-bit SAR ADC | SPI Interface | 8-channel | General purpose.
+- **ADC0804:** 8-bit SAR ADC | Parallel Interface | Classic educational IC.
+
+**DAC ICs:**
+- **MCP4725:** 12-bit DAC | I2C Interface | Single channel | Voltage output.
+- **DAC0808:** 8-bit Current-steering DAC | Parallel Interface | High speed.
+
+**Reference Voltage ICs:**
+- **LM336:** Precision Voltage Reference | Low drift.
+- **TL431:** Programmable Shunt Regulator.
+
+---
+
+## 4. COMPONENT SELECTION THRESHOLDS
+
+**Resistor Tolerance:**
+- For R-2R ladders: Use $0.1\%$ or $0.01\%$ tolerance resistors to prevent DNL errors.
+- For general biasing: $1\%$ metal film resistors.
+
+**Capacitor Selection:**
+- Decoupling: $0.1\mu\text{F}$ ceramic capacitor placed within $2\text{mm}$ of $V_{cc}$ pins to suppress high-frequency noise.
+- Anti-aliasing: Low-ESR film capacitors for stability.
+
+**Voltage Derating:**
+- Operate ICs at $\le 80\%$ of maximum rated $V_{cc}$ to increase longevity and reduce thermal noise.
+
+**Op-Amp Selection:**
+- Slew Rate: Must be $\ge 2\pi \cdot f_{max} \cdot V_{peak}$ to avoid distortion.
+- Offset Voltage: Must be $< 1 \text{ LSB}$ of the ADC resolution.
+
+---
+
+## 5. BREADBOARD & PCB TROUBLESHOOTING
+
+1. **Symptom:** Output signal shows "staircase" noise or jitter.
+   - **Cause:** Power supply ripple or missing decoupling capacitors.
+   - **Test:** Oscilloscope check on $V_{cc}$ rail.
+   - **Fix:** Add $10\mu\text{F}$ electrolytic and $100\text{nF}$ ceramic capacitors.
+
+2. **Symptom:** ADC readings fluctuate randomly (instability).
+   - **Cause:** High impedance source driving the ADC input.
+   - **Test:** Measure source impedance.
+   - **Fix:** Insert a unity-gain Op-Amp buffer between source and ADC.
+
+3. **Symptom:** DAC output does not reach full-scale voltage.
+   - **Cause:** $V_{ref}$ is lower than intended or output load is too heavy.
+   - **Test:** Measure $V_{ref}$ pin voltage.
+   - **Fix:** Increase $V_{ref}$ or add a buffer Op-Amp to the DAC output.
+
+4. **Symptom:** Aliasing (ghost frequencies in digital data).
+   - **Cause:** Input signal contains frequencies $> \frac{f_s}{2}$.
+   - **Test:** FFT analysis of input signal.
+   - **Fix:** Lower the filter cutoff frequency of the anti-aliasing filter.
+
+5. **Symptom:** I2C/SPI communication failure (No data).
+   - **Cause:** Missing pull-up resistors on SDA/SCL lines.
+   - **Test:** Logic analyzer or Multimeter (check for $V_{cc}$ on lines).
+   - **Fix:** Add $4.7\text{k}\Omega$ to $10\text{k}\Omega$ pull-up resistors.
+
+---
+
+## 6. VIVA & INTERVIEW TRAPS
+
+**Q1: Why is a $\Sigma\Delta$ ADC slower than a Flash ADC?**
+**A:** $\Sigma\Delta$ ADCs use oversampling and digital decimation filters to achieve high resolution, requiring many samples per single output value. Flash ADCs use a comparator array to convert in one clock cycle.
+
+**Q2: What is the difference between Resolution and Accuracy?**
+**A:** Resolution is the smallest detectable change (determined by $n$-bits). Accuracy is the difference between the measured value and the true value (determined by INL, Gain Error, and Offset).
+
+**Q3: What happens if you sample a $10\text{kHz}$ signal at $15\text{kHz}$?**
+**A:** Aliasing occurs. The signal will appear as a $5\text{kHz}$ signal ($|15\text{kHz} - 10\text{kHz}|$) in the digital domain.
+
+**Q4: Why is an R-2R ladder preferred over a Binary Weighted Resistor network?**
+**A:** Binary weighted networks require a huge range of resistor values (e.g., $R$ to $2^{n-1}R$), making them impossible to match precisely for $n > 8$. R-2R only requires two values ($R$ and $2R$).
+
+**Q5: What is "Missing Code" in an ADC?**
+**A:** A digital output value that the ADC can never produce, regardless of the input. This is caused by excessive DNL (Differential Non-Linearity) where a step width becomes negative.

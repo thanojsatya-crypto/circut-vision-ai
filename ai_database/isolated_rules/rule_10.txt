@@ -1,0 +1,32 @@
+## 1. CORE FORMULAS & MATHEMATICS
+1. Z = ω²L/C  
+2. Q = ω/(2πRC)  
+3. Impedance Matching Z₀ = √(L/C)  
+4. Resonance Frequency ω₀ = 1/√(LC)  
+5. Small Signal Approximation Z ≈ Z₀  
+6. Thermal Stability Threshold T₀  
+
+## 2. DESIGN ORDER OF OPERATIONS
+1. Calculate Z₀ first  
+2. Determine component values sequentially  
+3. Test parameters iteratively  
+
+## 3. STANDARD VALUES & PARAMETERS
+12V supply, 100kΩ resistors, 1MΩ capacitors, 2N4148 ICs  
+
+## 4. PRACTICAL COMPONENT SELECTION RULES
+Use electrolytic capacitors for high capacitance, ceramic for stability, 1/4W resistors for low power  
+
+## 5. COMMON MISTAKES & TROUBLESHOOTING
+1. Incorrect frequency calculation  
+2. Wrong component sizing  
+3. Misreading datasheets  
+4. Overlooking thermal limits  
+5. Incorrect impedance matching  
+
+## 6. VIVA & INTERVIEW TRAPS
+1. Resonance frequency miscalculation  
+2. Stability under load  
+3. Signal attenuation errors  
+4. Component failure points  
+5. Frequency drift issues

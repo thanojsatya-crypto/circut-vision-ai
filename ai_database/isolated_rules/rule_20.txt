@@ -1,0 +1,97 @@
+## 1. CORE FORMULAS & MATHEMATICS
+| # | Formula | Description | Applicable Domain |
+|---|---------|-------------|-------------------|
+| 1 | **\(f_{T}= \frac{g_m}{2\pi C_{gg}}\)** | Unity‑gain frequency of a MOSFET | Analog CMOS design |
+| 2 | **\(g_m = \mu_n C_{ox}\frac{W}{L}(V_{GS}-V_{TH})\)** | Transconductance of a MOSFET in saturation | Analog & RF |
+| 3 | **\(C_{gg}= C_{gs}+C_{gd}+C_{gb}\)** | Total gate capacitance | Frequency response |
+| 4 | **\(A_v = -g_m R_D\)** | Small‑signal voltage gain of a common‑source stage (neglecting ro) | Amplifier design |
+| 5 | **\(A_v = -\frac{g_m R_D}{1+g_m R_S}\)** | Gain with source degeneration | Linearization |
+| 6 | **\(f_{3dB}= \frac{1}{2\pi RC}\)** | Low‑pass pole frequency | RC networks, filters |
+| 7 | **\(P_{dyn}= \alpha C_L V_{DD}^2 f\)** | Dynamic power of a CMOS gate | Digital design |
+| 8 | **\(P_{leak}= I_{leak} V_{DD}\)** | Static/leakage power | Low‑power design |
+| 9 | **\(E_{switch}= \frac{1}{2} C_L V_{DD}^2\)** | Energy per transition | Energy‑aware design |
+|10| **\(FOM = \frac{P_{dyn}}{f_T}\)** | Figure‑of‑Merit for high‑speed CMOS | Speed‑power trade‑off |
+|11| **\(t_{pd}=0.69 R_{eq} C_{L}\)** | Propagation delay of an RC‑loaded gate | Timing analysis |
+|12| **\(t_{setup}= t_{clk\_Q} + t_{comb} + t_{skew}\)** | Setup time budget for synchronous logic | Sequential design |
+|13| **\(V_{OL}= V_{DD} \frac{R_{on}}{R_{on}+R_{pullup}}\)** | Output low voltage of a CMOS inverter | Noise margin |
+|14| **\(V_{OH}= V_{DD} - I_{leak}R_{pullup}\)** | Output high voltage of a CMOS inverter | Noise margin |
+|15| **\(SR = \frac{I_{drive}}{C_L}\)** | Slew rate of a gate output | Signal integrity |
+|16| **\(K_{design}= \frac{W}{L}\)** | Size ratio for MOSFET sizing | Layout & sizing |
+|17| **\(M_{c}= \frac{C_{load}}{C_{gate}}\)** | Fan‑out capacitance factor | Buffer chain sizing |
+|18| **\(N_{stage}= \log_4\left(\frac{C_{load}}{C_{in}}\right)\)** | Optimal number of stages in a logical effort buffer chain | High‑speed design |
+|19| **\(LE = \frac{g_m R_{out}}{1+g_m R_S}\)** | Loop gain of a feedback amplifier | Stability |
+|20| **\(P_{total}=P_{dyn}+P_{leak}+P_{static}\)** | Total power consumption | System‑level budgeting |
+
+---
+
+## 2. DESIGN PROCEDURE (Step‑by‑Step)
+1. **Define Specifications** – frequency, gain, bandwidth, power, supply voltage, load capacitance, area, technology node.  
+2. **Select Architecture** – e.g., common‑source amp, folded‑cascode, differential pair, pipeline stage, SRAM cell, etc.  
+3. **Pre‑liminary Hand‑Calculation** – use core formulas to estimate transistor dimensions (W/L), bias currents, resistor values, and required number of stages.  
+4. **Bias Point Determination** – set \(V_{DS}\), \(V_{GS}\), \(I_{D}\) to satisfy headroom and linearity; verify \(V_{GS}>V_{TH}\) and \(V_{DS}>V_{GS}-V_{TH}\).  
+5. **Small‑Signal Model Extraction** – compute \(g_m\), \(r_o\), \(C_{gs}\), \(C_{gd}\); build equivalent circuit.  
+6. **Frequency & Stability Analysis** – calculate poles/zeros, phase margin, gain‑bandwidth product; adjust compensation (Miller capacitor, RC).  
+7. **Power Budgeting** – compute \(P_{dyn}\) and \(P_{leak}\); iterate bias current to meet target.  
+8. **Noise & Linearity Check** – evaluate input‑referred noise (\(e_n\)), THD, and 1‑dB compression point; adjust source degeneration or bias if needed.  
+9. **Logical Effort / Buffer Chain Sizing** (digital) – determine optimal fan‑out, stage count, and transistor sizing using \(M_c\) and \(N_{stage}\).  
+10. **Layout Considerations** – decide on common‑centroid, inter‑digitated, shielding, and metal stack; enforce design rules for DRC/LVS.  
+11. **Post‑Layout Extraction** – extract parasitics (RC, coupling capacitance); re‑run AC, transient, and Monte‑Carlo simulations.  
+12. **Design for Testability (DFT)** – insert scan chains, BIST, or boundary‑scan cells as required.  
+13. **Component Selection** – map calculated values to standard cell libraries (standard cells, analog blocks) or discrete ICs (see Section 3).  
+14. **Prototype Fabrication / Tape‑out** – generate GDSII, submit to fab; request MPW or prototype run.  
+15. **Silicon Validation** – perform wafer‑level testing, characterize gain, speed, power; compare with simulation; apply corner‑case analysis.  
+16. **Iterate** – adjust sizing, bias, or architecture based on silicon results; repeat steps 5‑15 as needed.
+
+---
+
+## 3. STANDARD IC / MODULE REFERENCE
+| Part No. | Type | Core Function | Pin Count | Key Specs (typ.) | Pinout Summary |
+|----------|------|---------------|-----------|------------------|----------------|
+| **74HC00** | TTL NAND gate | 4‑input NAND | 14 | VCC=5 V, f_max=20 MHz, I_OH=–0.4 mA | 1 = A1, 2 = B1, 3 = Y1, 4 = A2, 5 = B2, 6 = Y2, 7 = GND, 8 = Y3, 9 = B3, 10 = A3, 11 = Y4, 12 = B4, 13 = A4, 14 = VCC |
+| **74LCX04** | CMOS inverter | 6 inverters | 14 | VCC=2‑5.5 V, f_max≈100 MHz, I_OH≈‑1 µA | 1 = A1, 2 = Y1, 3 = A2, 4 = Y2, 5 = A3, 6 = Y3, 7 = GND, 8 = Y4, 9 = A4, 10 = Y5, 11 = A5, 12 = Y6, 13 = A6, 14 = VCC |
+| **LM358** | Dual op‑amp | Low‑power, rail‑to‑rail input | 8 | VCC=3‑32 V, GBW≈1 MHz, I_B≈45 nA | 1 = OUT1, 2 = IN‑1, 3 = IN+1, 4 = VCC+, 5 = IN+2, 6 = IN‑2, 7 = OUT2, 8 = VCC‑ |
+| **AD8361** | RF Gain‑Control Amplifier | 0‑+30 dB, 0.1‑500 MHz | 16 | VDD=5 V, NF≈1.5 dB, P≈30 mW | 1 = VIN+, 2 = VIN‑, 3 = VDD, 4 = GND, 5‑12 = GAIN‑CTRL (binary), 13 = VOUT, 14‑16 = NC |
+| **CD4007** | CMOS Triple Complementary Pair | N‑MOS + P‑MOS pair | 14 | VDD=3‑15 V, f_max≈2 MHz | 1 = P‑MOS1‑G, 2 = P‑MOS1‑S, 3 = N‑MOS1‑G, 4 = N‑MOS1‑D, 5 = P‑MOS2‑G, 6 = P‑MOS2‑S, 7 = N‑MOS2‑G, 8 = N‑MOS2‑D, 9 = P‑MOS3‑G, 10 = P‑MOS3‑S, 11 = N‑MOS3‑G, 12 = N‑MOS3‑D, 13 = VDD, 14 = VSS |
+| **Xilinx Artix‑7 (XC7A35T)** | FPGA | 33k logic cells, 1.8 V I/O | 484‑pin BGA | 1.0 V core, 600 Mbps SERDES, 2 MB BRAM | Pinout defined in Xilinx package data; includes VCCINT, VCCIO, GND, configuration pins, I/O banks |
+| **TSMC 28 nm LP CMOS** | Process Design Kit (PDK) | Standard cell + analog IP | – | VDD=0.9 V, ft≈150 GHz, leakage ~10 nA/µm | Not a discrete IC – library cells (e.g., NAND2_X1, INV_X2) with pin names: A, B, Y, VDD, VSS |
+| **Micron MT41K256M16HA‑125** | DDR3 SDRAM | 4 Gb, 1.6 V | 240‑pin BGA | 800 MT/s, 16‑bit I/O, 2 Gb/s burst | Pins: A0‑A15 (address), BA0‑BA2 (bank), CK/CK#, DQ0‑DQ15, DQS/DQS#, VDD, VSS, RESET# |
+| **ON Semiconductor NCP590** | Low‑Dropout Regulator | 1 A, 2.5‑5.5 V input | 5 | VOUT=1.2‑5 V, dropout ≤ 200 mV, PSRR> 60 dB | 1 = VIN, 2 = GND, 3 = VOUT, 4 = ADJ, 5 = NC |
+| **MAX232** | RS‑232 Level Shifter | ±10 V TX/RX | 16 | VCC=5 V, 1 Mbps, 1 µF external caps | 1 = C1+, 2 = C1‑, 3 = V+, 4 = V‑, 5‑8 = T1IN/T1OUT/R1IN/R1OUT, 9‑12 = C2+,C2‑,V+,V‑, 13‑16 = GND, VCC, NC, NC |
+
+---
+
+## 4. COMPONENT SELECTION THRESHOLDS
+| Category | Rule | Example |
+|----------|------|---------|
+| **Resistor Power Rating** | \(P_{derated}=0.5 \times P_{rated}\) for continuous operation; use ≥ 2× expected dissipation for safety. | If calculated \(P=0.12 W\), select 0.25 W resistor. |
+| **Resistor Voltage Derating** | Max voltage ≤ 0.6 × rated voltage for thin‑film; ≤ 0.8 × for thick‑film. | 250 mV across 1 kΩ → 0.25 V < 0.6 × 250 V (250 V rating). |
+| **Capacitor Voltage Rating** | Choose \(V_{rated} ≥ 1.5 \times V_{max}\) (ceramic) or 2× for electrolytic. | 5 V rail → 10 V ceramic X7R. |
+| **Capacitor Tolerance** | ±5 % for C0G/NP0, ±10 % for X7R, ±20 % for electrolytic. Use tighter tolerance for timing networks. |
+| **Inductor Saturation** | \(I_{sat} ≥ 1.2 \times I_{peak}\). | Switching regulator 2 A peak → select inductor with \(I_{sat}≥2.4 A\). |
+| **MOSFET Sizing** | \(W/L\) chosen to meet target \(g_m\) and \(R_{on}\); ensure \(V_{DS(max)} ≥ 1.5 \times V_{DD}\). | For 0.5 mA bias at 1.8 V, \(g_m≈100 µS\) → \(W/L≈10\) for 65 nm device. |
+| **IC Voltage Derating** | Operate ≤ 80 % of absolute max rating for reliability. | 5 V TTL IC rated 6 V → limit to 4.8 V. |
+| **Digital Gate Sizing** | Logical effort: size each stage so that stage effort \(f = \sqrt[ N]{M_c}\). Use integer multiples of minimum size. | For fan‑out 8, 3 stages → each stage size ≈2×, 4×, 8×. |
+| **Thermal Management** | Junction temperature \(T_j ≤ 125 °C\); compute \(P_{loss}=I^2 R_{on}\) and use thermal resistance \(\theta_{JA}\) to verify. | MOSFET \(R_{on}=30 mΩ\), I=5 A → \(P=0.75 W\); with \(\theta_{JA}=50 °C/W\), ΔT=37.5 °C → OK if ambient ≤ 85 °C. |
+| **ESD Protection** | Add clamping diodes with breakdown 0.5 V above max signal; series resistance ≤ 50 Ω to limit surge current. | I/O at 3.3 V → TVS 3.8 V, 1 kΩ series. |
+
+---
+
+## 5. BREADBOARD & PCB TROUBLESHOOTING
+| # | Symptom | Probable Cause | Test Method | Fix |
+|---|----------|----------------|-------------|-----|
+| 1 | Oscilloscope shows no output, only flat line at VDD/2 | Gate input not toggling → missing connection or burnt input transistor | Probe input node, check continuity with multimeter; verify bias network voltages | Re‑wire breadboard trace, replace damaged MOSFET or IC |
+| 2 | Output swings only 0.2 V below VDD, high‑level distortion | Insufficient pull‑up strength or VDS saturation in pull‑up device | Measure output resistance with a load; check \(R_{on}\) of pull‑up transistor | Reduce pull‑up resistance, increase transistor width, or add buffer |
+| 3 | Excessive heat on a resistor, circuit shuts down | Over‑rated power dissipation or short to ground | Use infrared camera or touch test; measure voltage across resistor and current | Replace with higher wattage part, add series resistor, correct wiring error |
+| 4 | Random glitches on digital lines at high speed | Signal integrity: ringing due to inadequate decoupling or trace impedance mismatch | Use high‑bandwidth probe; look for ringing; check decoupling caps placement | Add 0.1 µF decoupling close to VDD pins, use controlled‑impedance traces, add series termination (≈ 50 Ω) |
+| 5 | Measured gain lower than calculated by > 30 % | Parasitic capacitance (Cgd) causing Miller effect, or device operating out of saturation | Perform AC sweep; extract pole locations; verify bias currents | Add Miller compensation capacitor, increase bias current, or redesign stage with cascode to reduce Cgd impact |
+
+---
+
+## 6. VIVA & INTERVIEW TRAPS
+| # | Question | Expected Answer (concise) |
+|---|----------|---------------------------|
+| 1 | *Why does the gain of a common‑source amplifier drop when source degeneration is added, yet linearity improves?* | Source degeneration adds negative feedback, reducing effective transconductance (\(g_m' = g_m/(1+g_mR_S)\)) → lower gain. The feedback linearizes the I‑V curve because variations in \(V_{GS}\) are partially cancelled by the voltage developed across \(R_S\). |
+| 2 | *Explain the trade‑off between \(f_T\) and \(V_{DD}\) in a scaled CMOS technology.* | \(f_T = g_m/(2\pi C_{gg})\). Scaling reduces \(C_{gg}\) but also reduces over‑drive voltage, limiting \(g_m\). Raising \(V_{DD}\) increases over‑drive, boosting \(g_m\) and \(f_T\), but at the cost of higher dynamic power (\(P∝V_{DD}^2\)). |
+| 3 | *What is the purpose of logical effort, and why is the optimal stage effort ≈ 4 for CMOS?* | Logical effort predicts delay as \(D = N·(g·h + p)\). Minimizing total delay for a given load yields equal stage effort \(f\). For typical CMOS, the minimum delay occurs near \(f≈4\) because the product of logical effort and parasitic delay is minimized, balancing gate sizing and number of stages. |
+| 4 | *In a differential pair, why is common‑mode rejection ratio (CMRR) limited by mismatch, and how can layout improve it?* | CMRR = \(g_m·R_{out}/(Δg_m/g_m)\). Any mismatch in transistor \(g_m\) (due to threshold or geometry variations) converts common‑mode signals into differential output. Common‑centroid and inter‑digitated layout reduce systematic mismatch, improving CMRR. |
+| 5 | *Describe the impact of substrate noise on mixed‑signal ASICs and one mitigation technique.* | Switching activity in digital blocks injects charge into the substrate, modulating analog node voltages (substrate coupling). This degrades noise performance and can cause false triggering. Mitigation: use deep n‑well isolation and guard rings tied to ground around sensitive analog circuits. |

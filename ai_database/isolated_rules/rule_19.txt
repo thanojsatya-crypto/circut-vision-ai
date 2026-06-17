@@ -1,0 +1,103 @@
+## 1. CORE FORMULAS & MATHEMATICS  
+- **Amplitude Modulation (AM) Sidebands**:  
+  $ s(t) = A_c [1 + m \cos(2\pi f_m t)] \cos(2\pi f_c t) $  
+  $ m \leq 1 $ (modulation index)  
+- **Carrier Frequency**:  
+  $ f_c = \frac{1}{2\pi\sqrt{LC}} $ (LC resonator)  
+- **Power in AM**:  
+  $ P_{total} = P_c + P_{USB} + P_{LSB} = P_c \left(1 + \frac{m^2}{2}\right) $  
+- **Efficiency of AM**:  
+  $ \eta = \frac{P_{USB} + P_{LSB}}{P_{total}} = \frac{m^2}{2(1 + m^2/2)} $  
+- **Frequency Modulation (FM) Carson Rule**:  
+  $ BW_{FM} \approx 2(\Delta f + f_m) $  
+- **Phase Modulation (PM) Modulation Index**:  
+  $ m_p = \frac{k_p A_m}{f_m} $  
+- **QPSK Symbol Rate**:  
+  $ R_s = \frac{R_b}{2} $ (bits/symbol = 2)  
+- **BPSK Energy per Bit**:  
+  $ E_b = \frac{P_t}{R_b} $  
+- **Noise Power Spectral Density**:  
+  $ N_0 = -174 \, \text{dBm/Hz} $ (thermal noise)  
+- **Signal-to-Noise Ratio (SNR)**:  
+  $ SNR = 10 \log_{10} \left(\frac{P_s}{N_0 B}\right) $  
+- **Shannon-Hartley Theorem**:  
+  $ C = B \log_2(1 + SNR) $  
+- **OOK Power Efficiency**:  
+  $ \eta_{OOK} = \frac{R_b}{2P_t} $  
+
+---
+
+## 2. DESIGN PROCEDURE  
+1. **Define Specifications**:  
+   - Data rate, modulation type, bandwidth, power constraints, environment (e.g., noise, temperature).  
+2. **Select Modulation Scheme**:  
+   - Compare BER vs. bandwidth vs. complexity (e.g., QAM for high data rate, FSK for simplicity).  
+3. **Calculate Required Parameters**:  
+   - Modulation index ($m$), bandwidth ($BW$), power per subcarrier, antenna gain.  
+4. **Circuit Topology Selection**:  
+   - Mixers, filters, amplifiers, ADCs/DACs, antennas.  
+5. **Component Value Calculation**:  
+   - Resistors (impedance matching), capacitors (filter cutoff), inductors (tank circuits).  
+6. **Simulation & Optimization**:  
+   - Use SPICE for S-parameters, RFIC simulation tools.  
+7. **Prototype & Test**:  
+   - Validate with network analyzer, spectrum analyzer, BER tester.  
+8. **Finalize PCB Layout**:  
+   - Minimize parasitics, use ground planes, impedance-controlled traces.  
+
+---
+
+## 3. STANDARD IC / MODULE REFERENCE  
+- **Si5351A**: Frequency synthesizer (I2C, 10 MHz–600 MHz)  
+  - Pinout: VCC, GND, SCL, SDA, CLKIN, REFCLK  
+  - Specs: ±0.5 ppm stability, 1 MHz resolution  
+- **MAX2700**: RF transceiver (2.4 GHz, Bluetooth)  
+  - Pinout: TX/RX, VDD, GND, CLK, DATAIN/OUT  
+  - Specs: 20 dBm output, ±3 dBm sensitivity  
+- **AD9852**: Direct Digital Synthesizer (DDS)  
+  - Pinout: VDD, GND, SCLK, FSIN, DATAIN  
+  - Specs: 200 MS/s, ±0.1° phase accuracy  
+- **RFM69W**: LoRa transceiver (433/868/915 MHz)  
+  - Pinout: VCC, GND, DIO0-DIO5, SPI, RESET  
+  - Specs: 20 dBm output, 0.1% BER at 10 km  
+
+---
+
+## 4. COMPONENT SELECTION THRESHOLDS  
+- **Resistors**:  
+  - Power rating: $ P \geq I^2 R $ (e.g., 1/4 W for 1 A, 1 kΩ).  
+  - Tolerance: ±1% for precision circuits, ±5% for power.  
+- **Capacitors**:  
+  - Dielectric: Ceramic (high-frequency), electrolytic (bulk).  
+  - Voltage derating: 70% of rated voltage for 1000 hrs.  
+- **Inductors**:  
+  - Core material: Ferrite (MHz), powdered iron (kHz).  
+  - Saturation current: $ I_{sat} \geq 1.5 \times I_{peak} $.  
+- **ICs**:  
+  - Thermal resistance: $ R_{\theta JC} \leq 5^\circ C/W $ for high-power.  
+  - Supply voltage: Match to system rails (e.g., 3.3V, 5V).  
+
+---
+
+## 5. BREADBOARD & PCB TROUBLESHOOTING  
+| Symptom | Probable Cause | Test Method | Fix |  
+|---------|----------------|-------------|-----|  
+| No output signal | Broken trace/short | Continuity test | Resolder/redesign layout |  
+| RF interference | Poor grounding | Oscilloscope (spectrum) | Star grounding, shielded cables |  
+| Component overheating | Overcurrent | Thermal camera | Add heatsink, reduce power |  
+| Signal distortion | Mismatched impedance | Vector network analyzer | Match Z₀ (50Ω traces) |  
+| Battery drain | Leaky capacitor | ESR meter | Replace capacitor, add TVS diode |  
+
+---
+
+## 6. VIVA & INTERVIEW TRAPS  
+1. **Q**: Why is AM inefficient compared to SSB?  
+   **A**: AM wastes 64% power in carrier; SSB suppresses carrier, doubling efficiency.  
+2. **Q**: Explain Carson’s Rule for FM bandwidth.  
+   **A**: $ BW = 2(\Delta f + f_m) $, where $ \Delta f $ is frequency deviation.  
+3. **Q**: How does QPSK differ from BPSK?  
+   **A**: QPSK encodes 2 bits/symbol (4 phases), doubling spectral efficiency vs. BPSK.  
+4. **Q**: What is the role of a mixer in modulation?  
+   **A**: Converts baseband to RF (upconversion) or vice versa (downconversion).  
+5. **Q**: Why use differential signaling in high-speed links?  
+   **A**: Reduces EMI and common-mode noise via balanced transmission.

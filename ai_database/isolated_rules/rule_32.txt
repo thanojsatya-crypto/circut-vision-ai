@@ -1,0 +1,131 @@
+## 1. CORE FORMULAS & MATHEMATICS
+- **Ohm’s Law**  
+  \(V = I \cdot R\)  
+  \(I = \frac{V}{R}\)  
+  \(R = \frac{V}{I}\)
+- **Power**  
+  \(P = V \cdot I\)  
+  \(P = I^2 \cdot R\)  
+  \(P = \frac{V^2}{R}\)
+- **Voltage Divider**  
+  \(V_{out} = V_{in} \cdot \frac{R_2}{R_1 + R_2}\)
+- **Capacitive Reactance**  
+  \(X_C = \frac{1}{2\pi f C}\)
+- **Inductive Reactance**  
+  \(X_L = 2\pi f L\)
+- **Resonant Frequency (LC)**  
+  \(f_0 = \frac{1}{2\pi \sqrt{LC}}\)
+- **Quality Factor (Q)**  
+  \(Q = \frac{f_0}{\Delta f}\) or \(Q = \frac{X_L}{R}\) (series)  
+  \(Q = \frac{R}{X_L}\) (parallel)
+- **Gain (Voltage)**  
+  \(A_v = \frac{V_{out}}{V_{in}}\)  
+  For op‑amp inverting: \(A_v = -\frac{R_f}{R_{in}}\)  
+  For non‑inverting: \(A_v = 1 + \frac{R_f}{R_{in}}\)
+- **Gain (Current)**  
+  \(A_i = \frac{I_{out}}{I_{in}}\)
+- **Efficiency (DC‑DC)**  
+  \(\eta = \frac{P_{out}}{P_{in}} \times 100\%\)
+- **Ripple Voltage (Capacitor)**  
+  \(\Delta V_{ripple} = \frac{I_{load}}{f \cdot C}\)
+- **Thermal Resistance (Power Dissipation)**  
+  \(T_j = T_a + \theta_{JA} \cdot P_{diss}\)
+- **Signal‑to‑Noise Ratio (SNR)**  
+  \(SNR_{dB} = 20 \log_{10}\left(\frac{V_{signal}}{V_{noise}}\right)\)
+
+## 2. DESIGN PROCEDURE (Step‑by‑Step)
+1. **Define Functional Requirements**  
+   - Input/output voltage and current ranges  
+   - Load type (resistive, capacitive, inductive)  
+   - Switching frequency (if applicable)  
+   - Desired efficiency, ripple, noise specifications  
+2. **Select Topology**  
+   - Linear regulator, buck, boost, buck‑boost, flyback, etc.  
+   - Consider component count, cost, size, EMI.  
+3. **Calculate Key Parameters**  
+   - Output voltage/current using equations above.  
+   - Switching frequency (trade‑off between size and losses).  
+   - Inductor value: \(L = \frac{V_{in} - V_{out}}{\Delta I_L \cdot f}\)  
+   - Capacitor value: \(C = \frac{\Delta I_L}{8 f \Delta V_{out}}\) (buck)  
+   - Duty cycle: \(D = \frac{V_{out}}{V_{in}}\) (ideal).  
+4. **Select Core Components**  
+   - Power MOSFET/IGBT: voltage, current rating, Rds(on).  
+   - Diode: Schottky or synchronous rectifier.  
+   - Feedback network: resistors for reference voltage.  
+   - Control IC or microcontroller (if required).  
+5. **Thermal Analysis**  
+   - Compute conduction and switching losses.  
+   - Verify junction temperature with \(\theta_{JA}\).  
+6. **EMI/ESD Protection**  
+   - Add input/output filtering, TVS diodes, snubber networks.  
+7. **PCB Layout Planning**  
+   - Power plane, ground plane, trace width calculations.  
+   - Minimize loop area for high‑frequency currents.  
+8. **Prototype and Test**  
+   - Build on breadboard or low‑cost PCB.  
+   - Measure voltage, ripple, efficiency, thermal.  
+9. **Iterate Design**  
+   - Adjust component values, layout, or topology based on test data.  
+10. **Finalize Documentation**  
+    - Schematics, BOM, Gerber files, test reports.
+
+## 3. STANDARD IC / MODULE REFERENCE
+| Category | Part | Pinout Summary | Key Specs |
+|----------|------|----------------|-----------|
+| Linear Regulator | LM7805 | 1‑VIN, 2‑GND, 3‑VOUT | 1.5 A, 35 V dropout |
+| Switching Regulator | LM2596 | 1‑VIN, 2‑GND, 3‑VOUT, 4‑FB, 5‑EN | 3 A, 40 V, 40 kHz |
+| Power MOSFET | IRF540N | 1‑Drain, 2‑Gate, 3‑Source | 33 V, 33 A, 0.077 Ω |
+| Schottky Diode | SS14 | 1‑Anode, 2‑Cathode | 1 A, 40 V, 1.2 V drop |
+| Op‑Amp | LM358 | 1‑V+, 2‑V−, 3‑OUT, 4‑IN+, 5‑IN−, 6‑GND | Dual, ±15 V, 20 mA |
+| Microcontroller | ATmega328P | 1‑PCINT0, 2‑PCINT1, …, 28‑RESET | 20 MHz, 32 kB flash |
+| EMI Filter | 1 µH/10 µH inductor | 1‑A, 2‑B | 100 mH, 1 A |
+| Voltage Reference | REF5025 | 1‑Vout, 2‑GND | 2.5 V, 1 µA bias |
+| Capacitor (X7R) | 10 µF | 1‑A, 2‑B | 50 V, ±10 % |
+| Inductor (Ferrite) | 22 µH | 1‑A, 2‑B | 1 A, 0.5 Ω |
+
+## 4. COMPONENT SELECTION THRESHOLDS
+- **Resistors**  
+  - Power rating ≥ 1.5 × maximum dissipated power.  
+  - Voltage derating: 80 % of maximum rated voltage.  
+  - Tolerance: 1 % for precision, 5 % for general use.  
+- **Capacitors**  
+  - ESR ≤ 0.1 Ω for high‑frequency decoupling.  
+  - Voltage derating: 70 % of rated voltage.  
+  - Temperature coefficient: X7R or C0G for stability.  
+- **Inductors**  
+  - Current rating ≥ 1.5 × maximum DC current.  
+  - Saturation current: >1.2 × max.  
+  - DCR ≤ 0.1 Ω for low loss.  
+- **MOSFETs**  
+  - Drain‑source voltage ≥ 1.5 × maximum Vds.  
+  - Continuous drain current ≥ 1.5 × max load.  
+  - Rds(on) ≤ 0.05 Ω for low conduction loss.  
+- **Diodes**  
+  - Peak reverse voltage ≥ 1.5 × max.  
+  - Forward current ≥ 1.5 × max.  
+  - Schottky preferred for low drop.  
+- **ICs**  
+  - Supply voltage ±10 % of rated range.  
+  - Temperature rating: -40 °C to +85 °C for student boards.  
+  - Derating: 80 % of absolute maximum.
+
+## 5. BREADBOARD & PCB TROUBLESHOOTING
+| Symptom | Probable Cause | Test Method | Fix |
+|---------|----------------|-------------|-----|
+| No output voltage | Power supply not connected or shorted | Check input voltage with DMM | Re‑wire power rail, replace damaged trace |
+| Excessive ripple | Undersized output capacitor or high ESR | Measure ripple with oscilloscope | Replace capacitor with lower ESR, increase capacitance |
+| Overheating MOSFET | Incorrect gate drive or missing gate resistor | Measure gate voltage, check temperature | Add proper gate driver, increase gate resistor, improve heat sinking |
+| Oscillation in output | Improper feedback loop or missing compensation | Observe output with oscilloscope | Add compensation capacitor, adjust feedback resistors |
+| No load current | Faulty switching device or wrong orientation | Check continuity of MOSFET channel, verify diode orientation | Replace faulty MOSFET/diode, correct orientation |
+
+## 6. VIVA & INTERVIEW TRAPS
+1. **Explain why a Schottky diode is preferred over a standard silicon diode in a buck converter.**  
+   *Answer:* Lower forward voltage drop reduces conduction loss and increases efficiency, especially at high switching frequencies.  
+2. **Derive the formula for the resonant frequency of an LC filter used as a low‑pass output filter.**  
+   *Answer:* \(f_0 = \frac{1}{2\pi\sqrt{LC}}\) from solving the differential equation of an LC circuit.  
+3. **What is the impact of ESR on the output ripple of a switching regulator?**  
+   *Answer:* Higher ESR increases ripple voltage (\(\Delta V = I_{load} \times ESR\)); low ESR capacitors reduce ripple.  
+4. **Why must the MOSFET’s drain‑source voltage rating be at least 1.5 × the maximum input voltage?**  
+   *Answer:* To provide margin against voltage spikes and ensure reliability under worst‑case conditions.  
+5. **Describe how to calculate the required gate resistor value for a MOSFET in a 40 kHz buck converter.**  
+   *Answer:* Use \(R_g = \frac{V_{drive} - V_{th}}{I_{gate}}\) with \(I_{gate}\) chosen to limit gate charge rise time to <10 % of switching period, ensuring proper turn‑on/off timing.

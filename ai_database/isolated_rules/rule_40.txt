@@ -1,0 +1,1109 @@
+## 1. CORE FORMULAS & MATHEMATICS
+
+### 1.1 Universal Constants and Symbols
+
+| Symbol | Meaning | Typical Value / Unit |
+|---|---:|---:|
+| \(q\) | Electronic charge | \(1.602\times10^{-19}\ \mathrm{C}\) |
+| \(k\) | Boltzmann constant | \(1.381\times10^{-23}\ \mathrm{J/K}\) |
+| \(T\) | Absolute temperature | \(\mathrm{K}\) |
+| \(V_T\) | Thermal voltage | \(V_T=kT/q\); \(25.85\ \mathrm{mV}\) at \(300\ \mathrm{K}\) |
+| \(\varepsilon_0\) | Permittivity of free space | \(8.854\times10^{-14}\ \mathrm{F/cm}\) |
+| \(\varepsilon_s\) | Semiconductor permittivity | \(\varepsilon_s=\varepsilon_r\varepsilon_0\) |
+| \(\varepsilon_{ox}\) | Oxide permittivity | \(\varepsilon_{ox}=3.9\varepsilon_0\) for \(\mathrm{SiO_2}\) |
+| \(A\) | Device cross-sectional area | \(\mathrm{cm^2}\) or \(\mathrm{m^2}\) |
+| \(W,L\) | MOSFET channel width and length | \(\mathrm{m}\) or \(\mu\mathrm{m}\) |
+| \(C_{ox}\) | Gate oxide capacitance per unit area | \(C_{ox}=\varepsilon_{ox}/t_{ox}\) |
+| \(N_D,N_A\) | Donor and acceptor doping concentration | \(\mathrm{cm^{-3}}\) |
+| \(n,p\) | Electron and hole concentrations | \(\mathrm{cm^{-3}}\) |
+| \(\mu_n,\mu_p\) | Electron and hole mobility | \(\mathrm{cm^2/V\cdot s}\) |
+| \(D_n,D_p\) | Electron and hole diffusion coefficients | \(\mathrm{cm^2/s}\) |
+| \(\tau_n,\tau_p\) | Electron and hole lifetime | \(\mathrm{s}\) |
+| \(L_n,L_p\) | Electron and hole diffusion length | \(\mathrm{cm}\) |
+
+---
+
+### 1.2 Semiconductor Equilibrium and Transport
+
+| Formula | Meaning |
+|---|---|
+| \(\displaystyle V_T=\frac{kT}{q}\) | Thermal voltage |
+| \(\displaystyle n=N_C e^{-(E_C-E_F)/kT}\) | Electron concentration in conduction band |
+| \(\displaystyle p=N_V e^{-(E_F-E_V)/kT}\) | Hole concentration in valence band |
+| \(\displaystyle n_i=\sqrt{N_CN_V}\,e^{-E_g/(2kT)}\) | Intrinsic carrier concentration |
+| \(\displaystyle np=n_i^2\) | Mass-action law at thermal equilibrium |
+| \(\displaystyle E_i=\frac{E_C+E_V}{2}+\frac{kT}{2}\ln\!\left(\frac{N_V}{N_C}\right)\) | Intrinsic Fermi level |
+| \(\displaystyle n=n_i e^{(E_{Fn}-E_i)/kT}\) | Electron concentration using electron quasi-Fermi level |
+| \(\displaystyle p=n_i e^{(E_i-E_{Fp})/kT}\) | Hole concentration using hole quasi-Fermi level |
+| \(\displaystyle E_{Fn}-E_{Fp}=qV_A\) | Quasi-Fermi level separation under applied junction voltage \(V_A\) |
+| \(\displaystyle p+N_D^+=n+N_A^-\) | Charge neutrality condition |
+| \(\displaystyle n_0\approx N_D,\quad p_0\approx \frac{n_i^2}{N_D}\) | Nondegenerate n-type semiconductor |
+| \(\displaystyle p_0\approx N_A,\quad n_0\approx \frac{n_i^2}{N_A}\) | Nondegenerate p-type semiconductor |
+| \(\displaystyle E_C-E_F\approx kT\ln\!\left(\frac{N_C}{N_D}\right)\) | Fermi level below conduction band in n-type material |
+| \(\displaystyle E_F-E_V\approx kT\ln\!\left(\frac{N_V}{N_A}\right)\) | Fermi level above valence band in p-type material |
+| \(\displaystyle \sigma=q(n\mu_n+p\mu_p)\) | Semiconductor conductivity |
+| \(\displaystyle \rho=\frac{1}{\sigma}\) | Resistivity |
+| \(\displaystyle R=\rho\frac{L}{A}\) | Resistance of semiconductor sample |
+| \(\displaystyle J_{n,\text{drift}}=qn\mu_nE\) | Electron drift current density |
+| \(\displaystyle J_{p,\text{drift}}=qp\mu_pE\) | Hole drift current density |
+| \(\displaystyle J_{n,\text{diff}}=qD_n\frac{dn}{dx}\) | Electron diffusion current density |
+| \(\displaystyle J_{p,\text{diff}}=-qD_p\frac{dp}{dx}\) | Hole diffusion current density |
+| \(\displaystyle \frac{D_n}{\mu_n}=\frac{D_p}{\mu_p}=\frac{kT}{q}=V_T\) | Einstein relation |
+| \(\displaystyle J_n=J_{n,\text{drift}}+J_{n,\text{diff}}\) | Total electron current density |
+| \(\displaystyle J_p=J_{p,\text{drift}}+J_{p,\text{diff}}\) | Total hole current density |
+| \(\displaystyle \frac{\partial n}{\partial t}=\frac{1}{q}\frac{\partial J_n}{\partial x}+G_n-R_n\) | Electron continuity equation |
+| \(\displaystyle \frac{\partial p}{\partial t}=-\frac{1}{q}\frac{\partial J_p}{\partial x}+G_p-R_p\) | Hole continuity equation |
+| \(\displaystyle L_n=\sqrt{D_n\tau_n}\) | Electron diffusion length |
+| \(\displaystyle L_p=\sqrt{D_p\tau_p}\) | Hole diffusion length |
+| \(\displaystyle \Delta n(x)=\Delta n(0)e^{-x/L_n}\) | Excess electron decay in steady state |
+| \(\displaystyle \Delta p(x)=\Delta p(0)e^{-x/L_p}\) | Excess hole decay in steady state |
+| \(\displaystyle R_H\approx-\frac{1}{qn}\) | Hall coefficient for n-type material |
+| \(\displaystyle R_H\approx+\frac{1}{qp}\) | Hall coefficient for p-type material |
+| \(\displaystyle V_H=R_H\frac{IB}{t}\) | Hall voltage |
+| \(\displaystyle E_g(T)=E_g(0)-\frac{\alpha T^2}{T+\beta}\) | Varshni bandgap temperature relation |
+| \(\displaystyle n_i(T)\propto T^{3/2}e^{-E_g/(2kT)}\) | Approximate intrinsic concentration temperature dependence |
+
+---
+
+### 1.3 Electrostatics and Poisson Equation
+
+| Formula | Meaning |
+|---|---|
+| \(\displaystyle \nabla\cdot(\varepsilon\nabla\psi)=-\rho\) | Poisson equation |
+| \(\displaystyle \rho=q(p-n+N_D^+-N_A^-)\) | Space-charge density |
+| \(\displaystyle \mathbf{E}=-\nabla\psi\) | Electric field from electrostatic potential |
+| \(\displaystyle \rho=-qN_A,\quad -x_p<x<0\) | p-side depletion charge density |
+| \(\displaystyle \rho=+qN_D,\quad 0<x<x_n\) | n-side depletion charge density |
+| \(\displaystyle \rho=0,\quad x<-x_p\ \text{or}\ x>x_n\) | Neutral-region charge density in depletion approximation |
+| \(\displaystyle E(-x_p)=0,\quad E(x_n)=0\) | Depletion-edge electric-field boundary condition |
+| \(\displaystyle \psi(x_n)-\psi(-x_p)=V_{bi}-V_A\) | Potential drop across depletion region |
+
+---
+
+### 1.4 PN Junction Formulas
+
+| Formula | Meaning |
+|---|---|
+| \(\displaystyle V_{bi}=V_T\ln\!\left(\frac{N_AN_D}{n_i^2}\right)\) | Built-in potential |
+| \(\displaystyle W=\sqrt{\frac{2\varepsilon_s}{q}\left(\frac{N_A+N_D}{N_AN_D}\right)(V_{bi}-V_A)}\) | Total depletion width |
+| \(\displaystyle x_p=\frac{N_D}{N_A+N_D}W\) | Depletion width on p-side |
+| \(\displaystyle x_n=\frac{N_A}{N_A+N_D}W\) | Depletion width on n-side |
+| \(\displaystyle E_{\max}=\frac{qN_Ax_p}{\varepsilon_s}=\frac{qN_Dx_n}{\varepsilon_s}\) | Maximum electric field at metallurgical junction |
+| \(\displaystyle E_{\max}=\frac{2(V_{bi}-V_A)}{W}\) | Alternate maximum-field expression |
+| \(\displaystyle p_n(0)=p_{n0}e^{V_A/V_T}\) | Minority-hole boundary condition on n-side |
+| \(\displaystyle n_p(0)=n_{p0}e^{V_A/V_T}\) | Minority-electron boundary condition on p-side |
+| \(\displaystyle p_{n0}=\frac{n_i^2}{N_D}\) | Equilibrium minority holes in n-side |
+| \(\displaystyle n_{p0}=\frac{n_i^2}{N_A}\) | Equilibrium minority electrons in p-side |
+| \(\displaystyle C_j=\frac{\varepsilon_sA}{W}\) | Junction depletion capacitance |
+| \(\displaystyle C_j=\frac{C_{j0}}{(1+V_R/V_{bi})^m}\) | Reverse-biased junction capacitance |
+| \(\displaystyle C_{j0}=A\sqrt{\frac{q\varepsilon_sN_AN_D}{2(N_A+N_D)V_{bi}}}\) | Zero-bias junction capacitance |
+| \(\displaystyle m=\frac{1}{2}\) | Grading coefficient for abrupt junction |
+| \(\displaystyle m=\frac{1}{3}\) | Grading coefficient for linearly graded junction |
+
+#### One-Sided Abrupt Junction Approximation
+
+For \(N_A\gg N_D\):
+
+| Formula | Meaning |
+|---|---|
+| \(\displaystyle W\approx\sqrt{\frac{2\varepsilon_s(V_{bi}-V_A)}{qN_D}}\) | Depletion extends mainly into lightly doped n-side |
+| \(\displaystyle x_n\approx W,\quad x_p\ll x_n\) | One-sided depletion approximation |
+| \(\displaystyle E_{\max}\approx\frac{qN_DW}{\varepsilon_s}\) | Maximum field approximation |
+
+---
+
+### 1.5 Diode Equations
+
+| Formula | Meaning |
+|---|---|
+| \(\displaystyle I_D=I_S\left(e^{V_D/(nV_T)}-1\right)\) | Shockley diode equation |
+| \(\displaystyle I_S=Aq n_i^2\left(\frac{D_p}{L_pN_D}+\frac{D_n}{L_nN_A}\right)\) | Reverse saturation current for abrupt pn junction |
+| \(\displaystyle n\approx1\text{ to }2\) | Diode ideality factor |
+| \(\displaystyle g_d=\frac{I_D}{nV_T}\) | Small-signal diode conductance, forward bias |
+| \(\displaystyle r_d=\frac{nV_T}{I_D}\) | Small-signal diode resistance, forward bias |
+| \(\displaystyle C_d=\tau_T g_d=\tau_T\frac{I_D}{nV_T}\) | Diffusion capacitance |
+| \(\displaystyle P_D=V_D I_D\) | Diode power dissipation |
+| \(\displaystyle \frac{dV_D}{dT}\approx -2\ \mathrm{mV/^\circ C}\) | Silicon diode forward-voltage temperature coefficient |
+| \(\displaystyle V_{BR}\) | Diode reverse breakdown voltage |
+| \(\displaystyle P_{BR}=V_{BR}I_R\) | Breakdown-region power limit check |
+
+---
+
+### 1.6 Zener Diode Regulator Formulas
+
+| Formula | Meaning |
+|---|---|
+| \(\displaystyle I_Z=\frac{V_S-V_Z}{R_S}-I_L\) | Zener current |
+| \(\displaystyle R_S=\frac{V_S-V_Z}{I_Z+I_L}\) | Series resistor for fixed input |
+| \(\displaystyle R_{S,\max}=\frac{V_{S,\min}-V_Z}{I_{Z,\min}+I_{L,\max}}\) | Maximum series resistor for regulation |
+| \(\displaystyle R_{S,\min}=\frac{V_{S,\max}-V_Z}{I_{Z,\max}+I_{L,\min}}\) | Minimum series resistor for Zener safety |
+| \(\displaystyle I_{Z,\max}=\frac{P_Z}{V_Z}\) | Maximum Zener current from power rating |
+| \(\displaystyle P_{R_S}=I_S^2R_S=(I_Z+I_L)^2R_S\) | Series resistor power |
+| \(\displaystyle r_z=\frac{\Delta V_Z}{\Delta I_Z}\) | Zener dynamic resistance |
+| \(\displaystyle V_{out}\approx V_{Z0}+I_Zr_z\) | Zener voltage including dynamic resistance |
+| \(\displaystyle \text{Line regulation}\approx \frac{r_z}{R_S+r_z}\) | Small-signal line regulation |
+
+---
+
+### 1.7 Rectifier and Filter Formulas
+
+| Topology | \(V_{DC}\) | \(V_{rms}\) | PIV |
+|---|---:|---:|---:|
+| Half-wave, resistive load | \(\displaystyle \frac{V_m}{\pi}\) | \(\displaystyle \frac{V_m}{2}\) | \(\displaystyle V_m\) |
+| Full-wave center-tap | \(\displaystyle \frac{2V_m}{\pi}\) | \(\displaystyle \frac{V_m}{\sqrt2}\) | \(\displaystyle 2V_m\) |
+| Full-wave bridge | \(\displaystyle \frac{2V_m}{\pi}\) | \(\displaystyle \frac{V_m}{\sqrt2}\) | \(\displaystyle V_m\) |
+
+| Formula | Meaning |
+|---|---|
+| \(\displaystyle V_r(pp)\approx\frac{I_L}{f_rC}\) | Capacitor-input ripple peak-to-peak |
+| \(\displaystyle f_r=f\) | Half-wave rectifier ripple frequency |
+| \(\displaystyle f_r=2f\) | Full-wave and bridge rectifier ripple frequency |
+| \(\displaystyle V_{DC}\approx V_{peak}-\frac{V_r(pp)}{2}\) | Approximate filtered DC output |
+| \(\displaystyle C\approx\frac{I_L}{f_rV_r(pp)}\) | Filter capacitor selection |
+| \(\displaystyle I_{D,avg}=I_L\) | Half-wave diode average current |
+| \(\displaystyle I_{D,avg}\approx \frac{I_L}{2}\) | Full-wave/bridge diode average current |
+| \(\displaystyle V_{sec,pk}=V_{out,pk}+n_DV_D\) | Transformer secondary peak voltage including diode drops |
+| \(\displaystyle V_{sec,rms}=\frac{V_{sec,pk}}{\sqrt2}\) | Transformer secondary RMS voltage |
+| \(\displaystyle n_D=1\) | Half-wave or center-tap conducting diode count |
+| \(\displaystyle n_D=2\) | Bridge rectifier conducting diode count |
+
+---
+
+### 1.8 LED Resistor Formula
+
+| Formula | Meaning |
+|---|---|
+| \(\displaystyle R=\frac{V_S-V_F}{I_F}\) | LED series resistor |
+| \(\displaystyle P_R=I_F^2R\) | Resistor power |
+| \(\displaystyle P_{LED}=V_FI_F\) | LED power |
+
+---
+
+### 1.9 BJT DC and Small-Signal Formulas
+
+| Formula | Meaning |
+|---|---|
+| \(\displaystyle I_E=I_C+I_B\) | BJT current relation |
+| \(\displaystyle \alpha=\frac{I_C}{I_E}\) | Common-base current gain |
+| \(\displaystyle \beta=\frac{I_C}{I_B}\) | Common-emitter current gain |
+| \(\displaystyle \alpha=\frac{\beta}{\beta+1}\) | \(\alpha\)-\(\beta\) relation |
+| \(\displaystyle \beta=\frac{\alpha}{1-\alpha}\) | \(\beta\)-\(\alpha\) relation |
+| \(\displaystyle I_C\approx I_S e^{V_{BE}/V_T}\) | Active-region collector current |
+| \(\displaystyle I_C=I_S e^{V_{BE}/V_T}\left(1+\frac{V_{CE}}{V_A}\right)\) | Active-region collector current with Early effect |
+| \(\displaystyle V_{BE(on)}\approx0.6\text{ to }0.7\ \mathrm{V}\) | Silicon BJT turn-on voltage |
+| \(\displaystyle V_{CE(sat)}\approx0.1\text{ to }0.3\ \mathrm{V}\) | BJT saturation voltage |
+| \(\displaystyle I_{B(sat)}\ge\frac{I_C}{\beta_{forced}}\) | Base current for saturation |
+| \(\displaystyle \beta_{forced}\approx10\text{ to }20\) | Forced beta for switching design |
+| \(\displaystyle R_B=\frac{V_{drive}-V_{BE}}{I_B}\) | Base resistor for BJT switch |
+| \(\displaystyle I_{C(sat)}\approx\frac{V_{CC}}{R_C+R_E}\) | Approximate collector saturation current |
+| \(\displaystyle V_{CE}=V_{CC}-I_CR_C-I_ER_E\) | Collector-emitter voltage in CE bias circuit |
+
+#### Voltage-Divider Bias
+
+| Formula | Meaning |
+|---|---|
+| \(\displaystyle V_{TH}=V_{CC}\frac{R_2}{R_1+R_2}\) | Thevenin base bias voltage |
+| \(\displaystyle R_{TH}=R_1\parallel R_2\) | Thevenin base resistance |
+| \(\displaystyle I_B=\frac{V_{TH}-V_{BE}}{R_{TH}+(\beta+1)R_E}\) | Base current with emitter degeneration |
+| \(\displaystyle I_C=\beta I_B\) | Collector current |
+| \(\displaystyle I_E=(\beta+1)I_B\) | Emitter current |
+| \(\displaystyle V_E=I_ER_E\) | Emitter voltage |
+| \(\displaystyle V_B=V_E+V_{BE}\) | Base voltage |
+| \(\displaystyle V_C=V_{CC}-I_CR_C\) | Collector voltage |
+| \(\displaystyle V_{CE}=V_C-V_E\) | Collector-emitter voltage |
+| \(\displaystyle I_{divider}\ge10I_B\) | Stiff voltage-divider rule |
+
+#### BJT Small-Signal Hybrid-\(\pi\) Model
+
+| Formula | Meaning |
+|---|---|
+| \(\displaystyle g_m=\frac{I_C}{V_T}\) | Transconductance |
+| \(\displaystyle r_e=\frac{V_T}{I_E}\approx\frac{1}{g_m}\) | Intrinsic emitter resistance |
+| \(\displaystyle r_\pi=\frac{\beta}{g_m}=\frac{\beta V_T}{I_C}\) | Base-emitter small-signal resistance |
+| \(\displaystyle r_o\approx\frac{V_A}{I_C}\) | Output resistance due to Early effect |
+| \(\displaystyle R_C'=R_C\parallel R_L\parallel r_o\) | Effective collector load |
+| \(\displaystyle A_v\approx-\frac{R_C'}{r_e+R_E}\) | CE amplifier voltage gain with emitter resistance |
+| \(\displaystyle A_v\approx-g_mR_C'\) | CE amplifier gain with bypassed emitter resistor |
+| \(\displaystyle R_{in(base)}=(\beta+1)(r_e+R_E)\) | Input resistance looking into base |
+| \(\displaystyle R_{in}=R_1\parallel R_2\parallel R_{in(base)}\) | Total CE amplifier input resistance |
+| \(\displaystyle R_{out}\approx R_C\parallel r_o\) | CE amplifier output resistance |
+| \(\displaystyle A_v\approx\frac{R_E'}{r_e+R_E'}\) | Emitter-follower voltage gain |
+| \(\displaystyle R_{out}\approx \frac{R_s'}{\beta+1}\parallel R_E\) | Emitter-follower output resistance |
+| \(\displaystyle A_v\approx g_mR_C'\) | Common-base voltage gain |
+| \(\displaystyle R_{in}\approx r_e\) | Common-base input resistance |
+
+---
+
+### 1.10 JFET Formulas
+
+| Formula | Meaning |
+|---|---|
+| \(\displaystyle I_D=I_{DSS}\left(1-\frac{V_{GS}}{V_P}\right)^2\) | JFET saturation-region drain current |
+| \(\displaystyle V_P<0\) for n-channel JFET | Pinch-off voltage sign convention |
+| \(\displaystyle V_{DS}\ge V_{GS}-V_P\) | Saturation condition |
+| \(\displaystyle V_{DS}<V_{GS}-V_P\) | Ohmic/triode condition |
+| \(\displaystyle g_m=\frac{2I_{DSS}}{|V_P|}\left(1-\frac{V_{GS}}{V_P}\right)\) | JFET transconductance |
+| \(\displaystyle g_{m0}=\frac{2I_{DSS}}{|V_P|}\) | JFET transconductance at \(V_{GS}=0\) |
+| \(\displaystyle g_m=g_{m0}\sqrt{\frac{I_D}{I_{DSS}}}\) | JFET transconductance from drain current |
+| \(\displaystyle V_{GS(off)}\approx V_P\) | Gate-source cutoff voltage approximation |
+
+---
+
+### 1.11 MOSFET Formulas
+
+| Formula | Meaning |
+|---|---|
+| \(\displaystyle C_{ox}=\frac{\varepsilon_{ox}}{t_{ox}}\) | Gate oxide capacitance per unit area |
+| \(\displaystyle k_n=\mu_nC_{ox}\frac{W}{L}\) | MOSFET process/geometry transconductance parameter |
+| \(\displaystyle V_{OV}=V_{GS}-V_T\) | NMOS overdrive voltage |
+| \(\displaystyle I_D=k_n\left[(V_{GS}-V_T)V_{DS}-\frac{V_{DS}^2}{2}\right](1+\lambda V_{DS})\) | NMOS triode/linear-region current |
+| \(\displaystyle I_D=\frac{1}{2}k_n(V_{GS}-V_T)^2(1+\lambda V_{DS})\) | NMOS saturation-region current |
+| \(\displaystyle V_{DS}\ge V_{GS}-V_T\) | NMOS saturation condition |
+| \(\displaystyle V_{DS}<V_{GS}-V_T\) | NMOS triode condition |
+| \(\displaystyle g_m=k_nV_{OV}\) | MOSFET transconductance in saturation |
+| \(\displaystyle g_m=\sqrt{2k_nI_D}\) | MOSFET transconductance from drain current |
+| \(\displaystyle r_o\approx\frac{1}{\lambda I_D}\) | MOSFET output resistance |
+| \(\displaystyle R_{DS(on)}=\frac{V_{DS}}{I_D}\bigg|_{\text{triode, specified }V_{GS}}\) | MOSFET on-resistance |
+| \(\displaystyle P_D=I_D^2R_{DS(on)}\) | MOSFET conduction loss |
+| \(\displaystyle P_{switch}\approx \frac{1}{2}V_{DS}I_D(t_r+t_f)f_s\) | Approximate switching loss |
+| \(\displaystyle I_G\approx C_{iss}\frac{\Delta V_{GS}}{t_r}\) | Gate-drive current estimate |
+| \(\displaystyle Q_g=C_{iss}\Delta V_{GS}\) | Gate charge estimate |
+
+#### MOSFET Body Effect
+
+| Formula | Meaning |
+|---|---|
+| \(\displaystyle \phi_F=V_T\ln\!\left(\frac{N_A}{n_i}\right)\) | Fermi potential for p-type substrate |
+| \(\displaystyle V_{FB}=\phi_{ms}-\frac{Q_{ox}}{C_{ox}}\) | Flat-band voltage |
+| \(\displaystyle V_{T0}=V_{FB}+2\phi_F+\frac{\sqrt{2q\varepsilon_sN_A(2\phi_F)}}{C_{ox}}\) | Zero-bias NMOS threshold voltage |
+| \(\displaystyle \gamma=\frac{\sqrt{2q\varepsilon_sN_A}}{C_{ox}}\) | Body-effect coefficient |
+| \(\displaystyle V_T=V_{T0}+\gamma\left(\sqrt{2\phi_F+V_{SB}}-\sqrt{2\phi_F}\right)\) | Threshold voltage with source-body bias |
+
+#### MOSFET Subthreshold Region
+
+| Formula | Meaning |
+|---|---|
+| \(\displaystyle I_D\approx I_{D0}e^{(V_{GS}-V_T)/(nV_T)}\left(1-e^{-V_{DS}/V_T}\right)\) | Subthreshold drain current |
+| \(\displaystyle SS=nV_T\ln 10\) | Subthreshold slope |
+| \(\displaystyle SS_{ideal}\approx60\ \mathrm{mV/dec}\) at \(300\ \mathrm{K}\) | Ideal MOSFET subthreshold slope |
+| \(\displaystyle n=1+\frac{C_{dep}}{C_{ox}}\) | Subthreshold slope factor |
+
+---
+
+### 1.12 Photodiode and Solar Cell Formulas
+
+| Formula | Meaning |
+|---|---|
+| \(\displaystyle I=I_S\left(e^{V_D/(nV_T)}-1\right)-I_{ph}\) | Photodiode current equation |
+| \(\displaystyle I_{SC}\approx I_{ph}\) | Short-circuit photocurrent |
+| \(\displaystyle V_{OC}=nV_T\ln\!\left(\frac{I_{ph}}{I_S}+1\right)\) | Solar-cell open-circuit voltage |
+| \(\displaystyle P=VI\) | Electrical output power |
+| \(\displaystyle P_{max}=V_{mp}I_{mp}\) | Maximum power point |
+| \(\displaystyle FF=\frac{P_{max}}{V_{OC}I_{SC}}\) | Fill factor |
+| \(\displaystyle \eta=\frac{P_{max}}{P_{in}}\) | Solar-cell efficiency |
+
+---
+
+### 1.13 Varactor Diode Formula
+
+| Formula | Meaning |
+|---|---|
+| \(\displaystyle C_j=\frac{C_{j0}}{(1+V_R/V_{bi})^m}\) | Varactor capacitance |
+| \(\displaystyle m=\frac{1}{2}\) | Abrupt junction varactor |
+| \(\displaystyle m=\frac{1}{3}\) | Hyperabrupt/graded junction approximation |
+
+---
+
+### 1.14 Device Thermal Formulas
+
+| Formula | Meaning |
+|---|---|
+| \(\displaystyle T_J=T_A+P_DR_{\theta JA}\) | Junction temperature |
+| \(\displaystyle P_{D,max}=\frac{T_{J,max}-T_A}{R_{\theta JA}}\) | Maximum device dissipation |
+| \(\displaystyle R_{\theta JA}=R_{\theta JC}+R_{\theta CS}+R_{\theta SA}\) | Total thermal resistance path |
+| \(\displaystyle R_{\theta SA}\le\frac{T_{J,max}-T_A}{P_D}-R_{\theta JC}-R_{\theta CS}\) | Required heatsink thermal resistance |
+
+---
+
+### 1.15 Noise Formulas
+
+| Formula | Meaning |
+|---|---|
+| \(\displaystyle \overline{v_n^2}=4kTRB\) | Thermal noise voltage of resistor |
+| \(\displaystyle \overline{i_n^2}=2qI_{DC}B\) | Shot noise current |
+| \(\displaystyle S_n(f)\propto\frac{1}{f}\) | Flicker or \(1/f\) noise dependence |
+
+---
+
+### 1.16 Standard Textbook Approximations
+
+| Approximation | Use |
+|---|---|
+| Complete ionization at room temperature | \(N_D^+\approx N_D,\ N_A^-\approx N_A\) |
+| Nondegenerate semiconductor | Boltzmann statistics valid |
+| Low-level injection | \(\Delta n\ll N_D\) in n-type, \(\Delta p\ll N_A\) in p-type |
+| Depletion approximation | Abrupt neutral/depleted regions |
+| Neutral-region electric field \(\approx0\) | Drift neglected outside depletion region |
+| Long-base diode | Neutral region length \(\gg\) diffusion length |
+| Ideal diode | \(n=1\), no series resistance |
+| Practical silicon diode | \(V_D\approx0.7\ \mathrm{V}\) |
+| Practical germanium diode | \(V_D\approx0.3\ \mathrm{V}\) |
+| Practical Schottky diode | \(V_D\approx0.2\text{ to }0.4\ \mathrm{V}\) |
+| BJT active region | \(V_{BE}\approx0.7\ \mathrm{V}\) |
+| BJT saturation | \(V_{CE(sat)}\approx0.2\ \mathrm{V}\) |
+| BJT large \(\beta\) | \(I_C\approx I_E\) |
+| MOSFET \(\lambda=0\) | Ignore channel-length modulation |
+| MOSFET body tied to source | Ignore body effect |
+| Capacitor DC behavior | Open circuit at DC |
+| Capacitor AC midband behavior | Short circuit at signal frequencies |
+| Room-temperature analysis | \(V_T\approx25\text{ to }26\ \mathrm{mV}\) |
+
+---
+
+## 2. DESIGN ORDER OF OPERATIONS
+
+### 2.1 General Semiconductor Device Analysis Flow
+
+1. Identify semiconductor material: Si, Ge, GaAs, etc.
+2. Identify temperature \(T\).
+3. Identify doping: \(N_D\), \(N_A\).
+4. Calculate intrinsic concentration \(n_i\).
+5. Calculate majority and minority carrier concentrations.
+6. Calculate conductivity \(\sigma=q(n\mu_n+p\mu_p)\).
+7. Calculate resistivity \(\rho=1/\sigma\).
+8. Calculate diffusion coefficients using \(D/\mu=V_T\).
+9. Calculate diffusion lengths \(L=\sqrt{D\tau}\).
+10. Apply bias condition: forward, reverse, zero bias.
+11. Calculate depletion width, electric field, capacitance, or current.
+12. Check power dissipation and breakdown limits.
+13. Check thermal limits using \(T_J=T_A+P_DR_{\theta JA}\).
+
+---
+
+### 2.2 PN Junction Diode Design Flow
+
+1. Specify required forward current \(I_F\).
+2. Select diode type: signal, rectifier, Schottky, Zener, LED.
+3. Estimate forward voltage \(V_D\).
+4. Calculate series resistance:
+
+\[
+R_S=\frac{V_S-V_D}{I_F}
+\]
+
+5. Calculate resistor power:
+
+\[
+P_R=I_F^2R_S
+\]
+
+6. Calculate diode power:
+
+\[
+P_D=V_DI_F
+\]
+
+7. Select diode ratings:
+   - \(I_F\) rating \(>\) operating current.
+   - PIV rating \(>\) maximum reverse voltage.
+   - Power rating \(>\) calculated dissipation.
+8. Check reverse leakage and breakdown.
+9. Recheck at temperature extremes.
+
+---
+
+### 2.3 Rectifier Power-Supply Design Flow
+
+1. Specify required DC output voltage \(V_{DC}\).
+2. Specify load current \(I_L\).
+3. Specify maximum ripple \(V_r(pp)\).
+4. Select rectifier topology:
+   - Half-wave: simple, high ripple.
+   - Full-wave center-tap: lower ripple, transformer center tap needed.
+   - Bridge: most common, two diode drops.
+5. Determine ripple frequency:
+   - Half-wave: \(f_r=f\)
+   - Full-wave/bridge: \(f_r=2f\)
+6. Calculate filter capacitor:
+
+\[
+C=\frac{I_L}{f_rV_r(pp)}
+\]
+
+7. Calculate required secondary peak voltage:
+
+\[
+V_{sec,pk}=V_{DC}+\frac{V_r(pp)}{2}+n_DV_D
+\]
+
+8. Calculate RMS secondary voltage:
+
+\[
+V_{sec,rms}=\frac{V_{sec,pk}}{\sqrt2}
+\]
+
+9. Select diode PIV rating:
+   - Half-wave: \(>V_m\)
+   - Center-tap: \(>2V_m\)
+   - Bridge: \(>V_m\)
+10. Select diode current rating:
+   - Average diode current \(>\) calculated average.
+   - Surge current \(>\) capacitor charging surge.
+11. Select transformer VA rating:
+
+\[
+VA\approx V_{sec,rms}I_{sec,rms}
+\]
+
+12. Add fuse, bleeder resistor, and voltage regulator if required.
+
+---
+
+### 2.4 Zener Voltage Regulator Design Flow
+
+1. Specify output voltage \(V_Z\).
+2. Specify load current range:
+   - \(I_{L,min}\)
+   - \(I_{L,max}\)
+3. Specify input voltage range:
+   - \(V_{S,min}\)
+   - \(V_{S,max}\)
+4. Select Zener power rating \(P_Z\).
+5. Calculate maximum Zener current:
+
+\[
+I_{Z,max}=\frac{P_Z}{V_Z}
+\]
+
+6. Select minimum Zener current:
+   - Small Zener: \(I_{Z,min}\approx1\text{ to }5\ \mathrm{mA}\)
+   - Power Zener: \(I_{Z,min}\approx10\text{ to }20\ \mathrm{mA}\)
+7. Calculate maximum series resistor:
+
+\[
+R_{S,max}=\frac{V_{S,min}-V_Z}{I_{Z,min}+I_{L,max}}
+\]
+
+8. Calculate minimum series resistor:
+
+\[
+R_{S,min}=\frac{V_{S,max}-V_Z}{I_{Z,max}+I_{L,min}}
+\]
+
+9. Choose standard resistor:
+
+\[
+R_{S,min}<R_S<R_{S,max}
+\]
+
+10. Calculate resistor power:
+
+\[
+P_R=(I_Z+I_L)^2R_S
+\]
+
+11. Verify regulation and Zener dissipation at all input/load extremes.
+
+---
+
+### 2.5 LED Driver Design Flow
+
+1. Specify LED forward current \(I_F\).
+2. Obtain LED forward voltage \(V_F\) from datasheet.
+3. Select supply voltage \(V_S\).
+4. Calculate resistor:
+
+\[
+R=\frac{V_S-V_F}{I_F}
+\]
+
+5. Calculate resistor power:
+
+\[
+P_R=I_F^2R
+\]
+
+6. Select resistor with at least \(2\times\) power margin.
+7. Verify LED power:
+
+\[
+P_{LED}=V_FI_F
+\]
+
+8. For high-current LEDs, use constant-current driver instead of resistor-only drive.
+
+---
+
+### 2.6 BJT Switch Design Flow
+
+1. Specify load current \(I_C\).
+2. Specify supply voltage \(V_{CC}\).
+3. Select BJT with:
+   - \(I_C\) rating \(>\) load current.
+   - \(V_{CEO}\) rating \(>\) supply voltage.
+   - adequate power rating.
+4. Choose forced beta:
+
+\[
+\beta_{forced}\approx10
+\]
+
+5. Calculate required base current:
+
+\[
+I_B=\frac{I_C}{\beta_{forced}}
+\]
+
+6. Calculate base resistor:
+
+\[
+R_B=\frac{V_{drive}-V_{BE}}{I_B}
+\]
+
+7. Check saturation:
+
+\[
+V_{CE(sat)}<V_{load,allowed}
+\]
+
+8. Calculate base-drive power and resistor power.
+9. Add flyback diode for inductive loads.
+10. Add base resistor and optional base-emitter pull-down resistor.
+
+---
+
+### 2.7 BJT Common-Emitter Amplifier Design Flow
+
+1. Select supply voltage \(V_{CC}\).
+2. Choose quiescent collector current \(I_C\).
+3. Set emitter voltage:
+
+\[
+V_E\approx0.1V_{CC}\text{ to }0.2V_{CC}
+\]
+
+4. Calculate emitter resistor:
+
+\[
+R_E=\frac{V_E}{I_E}\approx\frac{V_E}{I_C}
+\]
+
+5. Set collector voltage near mid-supply:
+
+\[
+V_C\approx\frac{V_{CC}}{2}
+\]
+
+6. Calculate collector resistor:
+
+\[
+R_C=\frac{V_{CC}-V_C}{I_C}
+\]
+
+7. Calculate \(V_{CEQ}\):
+
+\[
+V_{CEQ}=V_C-V_E
+\]
+
+8. Select voltage-divider current:
+
+\[
+I_{divider}\ge10I_B
+\]
+
+9. Calculate \(R_1,R_2\) from \(V_B=V_E+V_{BE}\).
+10. Calculate small-signal parameters:
+   - \(g_m=I_C/V_T\)
+   - \(r_e=V_T/I_E\)
+   - \(r_\pi=\beta/g_m\)
+11. Calculate gain:
+
+\[
+A_v\approx-\frac{R_C\parallel R_L}{r_e+R_E}
+\]
+
+12. Select coupling capacitors so:
+
+\[
+X_C\ll R_{in}\quad\text{at lowest signal frequency}
+\]
+
+13. Select emitter bypass capacitor so:
+
+\[
+X_{C_E}\ll R_E\quad\text{at lowest signal frequency}
+\]
+
+14. Verify output swing without cutoff or saturation clipping.
+
+---
+
+### 2.8 JFET Bias Design Flow
+
+1. Obtain \(I_{DSS}\) and \(V_P\) from datasheet.
+2. Choose desired drain current \(I_D\).
+3. Calculate required \(V_{GS}\):
+
+\[
+V_{GS}=V_P\left(1-\sqrt{\frac{I_D}{I_{DSS}}}\right)
+\]
+
+4. Select source resistor for self-bias:
+
+\[
+R_S=-\frac{V_{GS}}{I_D}
+\]
+
+5. Select drain resistor for desired \(V_D\):
+
+\[
+R_D=\frac{V_{DD}-V_D}{I_D}
+\]
+
+6. Verify saturation:
+
+\[
+V_{DS}\ge V_{GS}-V_P
+\]
+
+7. Calculate transconductance:
+
+\[
+g_m=\frac{2I_{DSS}}{|V_P|}\left(1-\frac{V_{GS}}{V_P}\right)
+\]
+
+8. Calculate voltage gain:
+
+\[
+A_v\approx-g_m(R_D\parallel R_L)
+\]
+
+---
+
+### 2.9 MOSFET Switch Design Flow
+
+1. Specify load voltage and load current.
+2. Select N-channel MOSFET for low-side switching or P-channel MOSFET for high-side switching.
+3. Verify \(V_{DS,max}>V_{supply}\).
+4. Verify \(I_D\) rating \(>\) load current.
+5. Verify \(R_{DS(on)}\) at available gate voltage.
+6. Calculate conduction loss:
+
+\[
+P_D=I_D^2R_{DS(on)}
+\]
+
+7. Check junction temperature:
+
+\[
+T_J=T_A+P_DR_{\theta JA}
+\]
+
+8. Select gate-drive voltage:
+   - Logic-level MOSFET: fully enhanced at \(3.3\ \mathrm{V}\) or \(5\ \mathrm{V}\)
+   - Standard MOSFET: usually requires \(10\ \mathrm{V}\)
+9. Add gate resistor:
+   - \(10\ \Omega\) to \(100\ \Omega\) typical
+10. Add gate-source pull-down resistor:
+   - \(10\ \mathrm{k\Omega}\) to \(100\ \mathrm{k\Omega}\) typical
+11. Add flyback diode for inductive loads.
+12. Add snubber or TVS if switching inductive or high-voltage loads.
+
+---
+
+### 2.10 MOSFET Amplifier Design Flow
+
+1. Select MOSFET and obtain \(k_n\), \(V_T\), \(\lambda\).
+2. Choose drain current \(I_D\).
+3. Calculate required overdrive:
+
+\[
+V_{OV}=\sqrt{\frac{2I_D}{k_n}}
+\]
+
+4. Calculate gate-source voltage:
+
+\[
+V_{GS}=V_T+V_{OV}
+\]
+
+5. Select drain resistor or active load.
+6. Verify saturation:
+
+\[
+V_{DS}\ge V_{OV}
+\]
+
+7. Calculate transconductance:
+
+\[
+g_m=\sqrt{2k_nI_D}
+\]
+
+8. Calculate gain:
+
+\[
+A_v\approx-g_m(R_D\parallel r_o\parallel R_L)
+\]
+
+9. Check output swing.
+10. Add coupling and bypass capacitors for desired bandwidth.
+
+---
+
+### 2.11 Photodiode Design Flow
+
+1. Specify illumination level or required photocurrent.
+2. Choose photodiode responsivity \(R_\lambda\).
+3. Estimate photocurrent:
+
+\[
+I_{ph}=R_\lambda P_{opt}
+\]
+
+4. Choose mode:
+   - Photoconductive mode: reverse bias, faster response.
+   - Photovoltaic mode: zero bias, lower noise.
+5. Select load or transimpedance resistor:
+
+\[
+V_{out}=I_{ph}R_f
+\]
+
+6. Check bandwidth:
+
+\[
+f_{-3dB}\approx\frac{1}{2\pi R_fC_{total}}
+\]
+
+7. Check dark current and shot noise.
+
+---
+
+### 2.12 Laboratory Characterization Flow
+
+| Device | Measurement Flow |
+|---|---|
+| Diode I-V | Set current-limiting resistor → sweep voltage → measure \(V_D,I_D\) → plot I-V → extract \(n\) and \(I_S\) |
+| Zener regulator | Vary \(V_S\) → measure \(V_Z,I_Z\) → calculate line regulation → vary \(I_L\) → calculate load regulation |
+| Rectifier | Measure transformer RMS → measure no-load DC → connect load → measure ripple → calculate \(C\) and ripple factor |
+| BJT output characteristics | Set fixed \(I_B\) → sweep \(V_{CE}\) → measure \(I_C\) → extract \(\beta\) and Early voltage |
+| BJT transfer characteristic | Sweep \(V_{BE}\) → measure \(I_C\) → verify exponential region |
+| JFET characteristics | Sweep \(V_{GS}\) → measure \(I_D\) → extract \(I_{DSS}\) and \(V_P\) |
+| MOSFET transfer characteristic | Sweep \(V_{GS}\) → measure \(I_D\) → extract \(V_T\) and \(k_n\) |
+| MOSFET output characteristic | Fix \(V_{GS}\) → sweep \(V_{DS}\) → identify triode and saturation regions |
+
+---
+
+## 3. STANDARD VALUES & PARAMETERS
+
+### 3.1 Physical and Material Parameters
+
+| Material | \(E_g\) at 300 K | \(\varepsilon_r\) | \(n_i\) at 300 K | \(\mu_n\) | \(\mu_p\) |
+|---|---:|---:|---:|---:|---:|
+| Silicon, Si | \(1.12\ \mathrm{eV}\) | 11.7 | \(\approx1\times10^{10}\ \mathrm{cm^{-3}}\) | \(\approx1350\ \mathrm{cm^2/Vs}\) | \(\approx480\ \mathrm{cm^2/Vs}\) |
+| Germanium, Ge | \(0.66\ \mathrm{eV}\) | 16.0 | \(\approx2.4\times10^{13}\ \mathrm{cm^{-3}}\) | \(\approx3900\ \mathrm{cm^2/Vs}\) | \(\approx1900\ \mathrm{cm^2/Vs}\) |
+| Gallium arsenide, GaAs | \(1.42\ \mathrm{eV}\) | 12.9 | \(\approx10^6\text{ to }10^7\ \mathrm{cm^{-3}}\) | \(\approx8500\ \mathrm{cm^2/Vs}\) | \(\approx400\ \mathrm{cm^2/Vs}\) |
+| Silicon dioxide, \(\mathrm{SiO_2}\) | Insulator | 3.9 | — | — | — |
+
+---
+
+### 3.2 Doping Ranges
+
+| Region | Doping Range |
+|---|---:|
+| Intrinsic | \(<10^{10}\ \mathrm{cm^{-3}}\) for Si at 300 K |
+| Lightly doped | \(10^{14}\text{ to }10^{16}\ \mathrm{cm^{-3}}\) |
+| Moderately doped | \(10^{16}\text{ to }10^{18}\ \mathrm{cm^{-3}}\) |
+| Heavily doped | \(>10^{18}\ \mathrm{cm^{-3}}\) |
+| Degenerate doping | \(\gtrsim10^{19}\ \mathrm{cm^{-3}}\) |
+
+---
+
+### 3.3 Standard Supply Voltages
+
+| Application | Common Values |
+|---|---:|
+| TTL logic | \(5\ \mathrm{V}\) |
+| Modern CMOS logic | \(3.3\ \mathrm{V},\ 2.5\ \mathrm{V},\ 1.8\ \mathrm{V}\) |
+| Op-amp lab supplies | \(\pm5\ \mathrm{V},\ \pm12\ \mathrm{V},\ \pm15\ \mathrm{V}\) |
+| Single-rail analog labs | \(5\ \mathrm{V},\ 9\ \mathrm{V},\ 12\ \mathrm{V},\ 15\ \mathrm{V}\) |
+| Relay/driver circuits | \(12\ \mathrm{V},\ 24\ \mathrm{V}\) |
+| Transformer secondaries | \(6\ \mathrm{VAC},\ 9\ \mathrm{VAC},\ 12\ \mathrm{VAC},\ 15\ \mathrm{VAC},\ 18\ \mathrm{VAC}\) |
+| USB power | \(5\ \mathrm{V}\) |
+| Automotive lab approximation | \(12\ \mathrm{V}\) nominal, \(13.8\ \mathrm{V}\) charging |
+
+---
+
+### 3.4 Diode Parameters
+
+| Device Type | Typical Forward Voltage | Typical Current Range | Notes |
+|---|---:|---:|---|
+| Silicon signal diode | \(0.6\text{ to }0.8\ \mathrm{V}\) | \(1\text{ to }100\ \mathrm{mA}\) | 1N4148, 1N914 |
+| Silicon rectifier diode | \(0.7\text{ to }1.1\ \mathrm{V}\) | \(1\text{ to }3\ \mathrm{A}\) | 1N400x, 1N540x |
+| Schottky diode | \(0.2\text{ to }0.45\ \mathrm{V}\) | \(100\ \mathrm{mA}\text{ to }10\ \mathrm{A}\) | Low drop, higher leakage |
+| Germanium diode | \(0.2\text{ to }0.3\ \mathrm{V}\) | Small signal | Rare in modern labs |
+| Red LED | \(1.8\text{ to }2.2\ \mathrm{V}\) | \(5\text{ to }20\ \mathrm{mA}\) | Standard indicator |
+| Green LED | \(2.0\text{ to }2.4\ \mathrm{V}\) | \(5\text{ to }20\ \mathrm{mA}\) | Standard indicator |
+| Blue/white LED | \(2.8\text{ to }3.6\ \mathrm{V}\) | \(5\text{ to }30\ \mathrm{mA}\) | Higher forward voltage |
+| IR LED | \(1.1\text{ to }1.4\ \mathrm{V}\) | \(10\text{ to }100\ \mathrm{mA}\) | Remote control/sensor |
+| Zener diode | Breakdown \(2.4\text{ to }200\ \mathrm{V}\) | \(1\text{ to }100\ \mathrm{mA}\) | Voltage reference/regulation |
+
+---
+
+### 3.5 BJT Parameters
+
+| Parameter | Typical Student-Lab Value |
+|---|---:|
+| \(V_{BE(on)}\) | \(0.6\text{ to }0.7\ \mathrm{V}\) |
+| \(V_{BE(sat)}\) | \(0.7\text{ to }0.9\ \mathrm{V}\) |
+| \(V_{CE(sat)}\) | \(0.1\text{ to }0.3\ \mathrm{V}\) |
+| Small-signal \(\beta\) | \(100\text{ to }300\) |
+| Power BJT \(\beta\) | \(20\text{ to }100\) |
+| Switching forced beta | \(10\text{ to }20\) |
+| Small-signal \(V_{CE,max}\) | \(30\text{ to }60\ \mathrm{V}\) |
+| Small-signal \(I_C,max\) | \(100\text{ to }300\ \mathrm{mA}\) |
+| \(V_T\) at 300 K | \(25.85\ \mathrm{mV}\) |
+| \(dV_{BE}/dT\) | \(\approx -2\ \mathrm{mV/^\circ C}\) |
+
+---
+
+### 3.6 MOSFET Parameters
+
+| Parameter | Typical Student-Lab Value |
+|---|---:|
+| Enhancement NMOS \(V_T\) | \(1\text{ to }4\ \mathrm{V}\) |
+| Logic-level gate drive | \(3.3\ \mathrm{V}\) or \(5\ \mathrm{V}\) |
+| Standard MOSFET gate drive | \(10\ \mathrm{V}\) |
+| Maximum \(V_{GS}\) | Usually \(\pm20\ \mathrm{V}\) |
+| Small-signal MOSFET \(I_D\) | \(10\text{ to }200\ \mathrm{mA}\) |
+| Power MOSFET \(I_D\) | \(1\text{ to }50\ \mathrm{A}\) |
+| \(R_{DS(on)}\) | \(10\ \mathrm{m\Omega}\text{ to }10\ \Omega\) |
+| Gate resistor | \(10\text{ to }100\ \Omega\) |
+| Gate pull-down resistor | \(10\text{ to }100\ \mathrm{k\Omega}\) |
+
+---
+
+### 3.7 JFET Parameters
+
+| Parameter | Typical Student-Lab Value |
+|---|---:|
+| \(I_{DSS}\) | \(1\text{ to }20\ \mathrm{mA}\) |
+| \(V_P\) for n-channel | \(-1\text{ to }-10\ \mathrm{V}\) |
+| \(V_{GS(off)}\) | Approximately \(V_P\) |
+| Gate current | Nearly zero reverse leakage |
+| Common lab JFETs | 2N5457, 2N5458, J201 |
+
+---
+
+### 3.8 Resistor Standard Values
+
+| Series | Values per Decade |
+|---|---|
+| E12 | 10, 12, 15, 18, 22, 27, 33, 39, 47, 56, 68, 82 |
+| E24 | 10, 11, 12, 13, 15, 16, 18, 20, 22, 24, 27, 30, 33, 36, 39, 43, 47, 51, 56, 62, 68, 75, 82, 91 |
+
+| Resistor Power Rating | Common Use |
+|---|---|
+| \(1/8\ \mathrm{W}\) | Low-power signal circuits |
+| \(1/4\ \mathrm{W}\) | General lab circuits |
+| \(1/2\ \mathrm{W}\) | Higher current bias networks |
+| \(1\ \mathrm{W}\) | LED arrays, small power loads |
+| \(2\text{ to }5\ \mathrm{W}\) | Load resistors, power dissipation |
+
+---
+
+### 3.9 Capacitor Standard Ranges
+
+| Capacitor Type | Typical Range | Common Use |
+|---|---:|---|
+| Ceramic disc/MLCC | \(1\ \mathrm{pF}\text{ to }10\ \mu\mathrm{F}\) | Decoupling, RF, bypass |
+| Electrolytic | \(0.1\ \mu\mathrm{F}\text{ to }1\ \mathrm{F}\) | Bulk filtering, coupling |
+| Tantalum | \(0.1\ \mu\mathrm{F}\text{ to }1000\ \mu\mathrm{F}\) | Compact bulk capacitance |
+| Film | \(1\ \mathrm{nF}\text{ to }10\ \mu\mathrm{F}\) | Audio, timing, precision AC |
+| Varactor | pF range | Tuned circuits |
+
+| Capacitor Voltage Derating Rule | Use |
+|---|---|
+| Ceramic | Use \(\ge2\times\) expected DC bias |
+| Electrolytic | Use \(\ge1.5\times\) expected voltage |
+| Tantalum | Use \(\ge2\times\) expected voltage or follow datasheet |
+| Film | Use \(\ge1.5\times\) expected voltage |
+
+---
+
+### 3.10 Standard IC Part Numbers
+
+| Function | Common Student-Lab ICs |
+|---|---|
+| General-purpose op-amp | LM741, LM358, TL081, TL072 |
+| Precision/reference op-amp | OP07, LF356 |
+| Comparator | LM311, LM393 |
+| Voltage regulator positive | 7805, 7809, 7812, 7815 |
+| Voltage regulator negative | 7905, 7912, 7915 |
+| Adjustable regulator | LM317, LM337 |
+| Timer | NE555, LM555 |
+| Logic inverter | 7404, 74HC04 |
+| NAND gate | 7400, 74HC00 |
+| Optocoupler | 4N25, PC817 |
+| SCR | TIC106, BT169 |
+| TRIAC | BT136 |
+| Bridge rectifier | W005-W10, KBU series |
+
+---
+
+### 3.11 Operating Limits and Lab Thresholds
+
+| Quantity | Typical Value |
+|---|---:|
+| Breadboard contact current safe design | \(<100\text{ to }500\ \mathrm{mA}\) |
+| Breadboard parasitic capacitance | pF range |
+| Breadboard parasitic resistance | \(\mathrm{m\Omega}\text{ to }\Omega\) range |
+| Commercial IC temperature range | \(0\text{ to }70^\circ\mathrm{C}\) |
+| Industrial IC temperature range | \(-40\text{ to }85^\circ\mathrm{C}\) |
+| Maximum silicon junction temperature | \(125\text{ to }175^\circ\mathrm{C}\) |
+| TTL logic low input | \(<0.8\ \mathrm{V}\) |
+| TTL logic high input | \(>2.0\ \mathrm{V}\) |
+| CMOS logic low input | \(<0.3V_{DD}\) |
+| CMOS logic high input | \(>0.7V_{DD}\) |
+| Electrostatic-sensitive MOSFET handling | Use wrist strap/grounded mat |
+
+---
+
+## 4. PRACTICAL COMPONENT SELECTION RULES
+
+### 4.1 Resistors
+
+| Selection Rule | Use |
+|---|---|
+| Use metal-film resistors | General lab circuits, low noise, better tolerance |
+| Use carbon-film resistors | Low-cost general-purpose circuits |
+| Use wirewound resistors | High-power loads, current sensing |
+| Use \(1\%\) tolerance | Bias networks, feedback, measurement circuits |
+| Use \(5\%\) tolerance | LED resistors, pull-ups, noncritical circuits |
+| Select power rating \(\ge2P_{calc}\) | Thermal safety margin |
+| Avoid using potentiometer as high-current rheostat without rating check | Prevent overheating |
+| Use pull-up/pull-down resistors | Prevent floating MOSFET gates and logic inputs |
+
+---
+
+### 4.2 Capacitors
+
+| Selection Rule | Use |
+|---|---|
+| Use ceramic capacitors | Decoupling, bypass, high-frequency filtering |
+| Use electrolytic capacitors | Bulk filtering in power supplies |
+| Use film capacitors | Audio coupling, precision timing, AC applications |
+| Use tantalum capacitors carefully | Compact bulk capacitance; observe polarity and derating |
+| Always observe polarity for electrolytic/tantalum capacitors | Reverse polarity causes leakage, heating, failure |
+| Place \(100\ \mathrm{nF}\) ceramic close to IC supply pins | High-frequency decoupling |
+| Place \(10\ \mu\mathrm{F}\) electrolytic near regulator input/output | Low-frequency bulk decoupling |
+| Use voltage derating | Prevent dielectric breakdown and capacitance loss |
+| Do not use electrolytic capacitors in high-frequency RF paths | High ESR/ESL |
+
+---
+
+### 4.3 Diodes
+
+| Selection Rule | Use |
+|---|---|
+| Use 1N4148/1N914 | Small-signal switching, clamping, protection |
+| Use 1N400x | Low-frequency rectification up to \(1\ \mathrm{A}\) |
+| Use 1N540x | Rectification up to \(3\ \mathrm{A}\) |
+| Use Schottky diode | Low forward drop, high-speed switching, low-voltage rectifiers |
+| Use Zener diode | Voltage reference, shunt regulation, overvoltage clamp |
+| Use LED series resistor | Current limiting |
+| Use flyback diode across inductive loads | Relay, motor, solenoid protection |
+| Use TVS diode | ESD/surge protection |
+| Check PIV for rectifiers | Prevent reverse breakdown |
+| Check average and surge current | Prevent diode overheating |
+
+---
+
+### 4.4 BJTs
+
+| Selection Rule | Use |
+|---|---|
+| Use BC547/BC548/2N3904 | General-purpose NPN small-signal circuits |
+| Use BC557/2N3906 | General-purpose PNP small-signal circuits |
+| Use 2N2222/PN2222 | Higher-current small-signal/switching |
+| Use TIP31/TIP41 | NPN power switching/amplifier |
+| Use TIP32/TIP42 | PNP power switching/amplifier |
+| Use forced beta \(10\text{ to }20\) for switches | Ensure saturation |
+| Use emitter resistor for bias stability | Reduce thermal runaway |
+| Use heat sink for power BJTs | Keep \(T_J<T_{J,max}\) |
+| Use flyback diode for inductive loads | Prevent collector voltage spikes |
+
+---
+
+### 4.5 MOSFETs
+
+| Selection Rule | Use |
+|---|---|
+| Use 2N7000/BS170 | Small-signal NMOS switching labs |
+| Use IRF540/IRFZ44N | Medium/high-current switching with \(10\ \mathrm{V}\) gate drive |
+| Use logic-level MOSFETs | \(3.3\ \mathrm{V}\) or \(5\ \mathrm{V}\) microcontroller drive |
+| Use N-channel MOSFET for low-side switching | Simpler gate drive, lower \(R_{DS(on)}\) |
+| Use P-channel MOSFET for simple high-side switching | Gate pulled low to turn on |
+| Use gate resistor \(10\text{ to }100\ \Omega\) | Reduce ringing and gate-drive current spikes |
+| Use gate-source pull-down \(10\text{ to }100\ \mathrm{k\Omega}\) | Prevent accidental turn-on |
+| Check \(R_{DS(on)}\) at actual \(V_{GS}\) | Datasheet \(R_{DS(on)}\) may be specified at \(10\ \mathrm{V}\) |
+| Add flyback diode for inductive loads | Protect MOSFET from voltage spikes |
+| Add heatsink if \(T_J\) limit is exceeded | Prevent thermal failure |
+
+---
+
+### 4.6 JFETs
+
+| Selection Rule | Use |
+|---|---|
+| Use 2N5457/2N5458 | General-purpose n-channel JFET amplifier labs |
+| Use J201 | Low-current JFET amplifier |
+| Use self-bias configuration | Simple JFET biasing |
+| Use large gate resistor | JFET gate current is very small |
+| Keep \(V_{GS}\) within reverse-bias limit | Avoid gate junction conduction |
+
+---
+
+### 4.7 Regulators and Protection
+
+| Selection Rule | Use |
+|---|---|
+| Use 7805/7812 for fixed positive rails | Simple linear regulation |
+| Use 7905/7912 for fixed negative rails | Dual-supply circuits |
+| Use LM317 for adjustable positive output | Variable linear supply |
+| Add input/output capacitors to regulators | Prevent oscillation and improve transient response |
+| Add heatsink to linear regulators | Dissipate \((V_{in}-V_{out})I_{load}\) |
+| Add reverse-polarity protection diode | Protect against supply reversal |
+| Add fuse or PTC | Overcurrent protection |
+| Add TVS diode | Transient overvoltage protection |
+
+---
+
+## 5. COMMON MISTAKES & TROUBLESHOOTING
+
+| # | Mistake | Symptoms | Corrective Action |
+|---:|---|---|---|
+| 1 | Diode, LED, electrolytic capacitor, or transistor polarity reversed | No output, LED not glowing, overheating, smoke, blown fuse | Check datasheet pinout, use multimeter diode mode, verify polarity before power |
+| 2 | LED or Zener used without current limiting | LED burns out, Zener overheats, supply current high | Add series resistor; calculate \(R=(V_S-V_F)/I_F\) for LED or \(R_S=(V_S-V_Z)/(I_Z+I_L)\) for Zener |
+| 3 | BJT switch not saturating | Load under-driven, transistor hot, \(V_{CE}\) too high | Increase base current; use forced beta \(10\text{ to }20\); recalculate \(R_B\) |
+| 4 | MOSFET not fully on | MOSFET hot, load voltage low, high \(R_{DS(on)}\) behavior | Use logic-level MOSFET; ensure \(V_{GS}\) meets datasheet condition; add gate pull-down |
+| 5 | Rectifier/filter designed with wrong PIV or ripple frequency | Diode failure, excessive ripple, output voltage lower than expected | Recalculate PIV; use \(f_r=f\) for half-wave and \(f_r=2f\) for full-wave/bridge; increase capacitor value |
+
+---
+
+## 6. VIVA & INTERVIEW TRAPS
+
+| # | Question | Correct Answer |
+|---:|---|---|
+| 1 | Why does a forward-biased silicon diode often appear to have a fixed \(0.7\ \mathrm{V}\) drop if the diode equation is exponential? | The diode current depends exponentially on voltage, so a large current change requires only a small voltage change. Around normal operating current, \(V_D\) varies slowly and is approximated as \(0.7\ \mathrm{V}\). |
+| 2 | If a pn junction has a built-in potential \(V_{bi}\), why can it not be measured directly using a voltmeter across an unbiased diode? | Metal-semiconductor contact potentials cancel the internal junction potential in an open circuit. At equilibrium, net current is zero, so no external voltage appears across the diode terminals. |
+| 3 | Is a BJT truly current-controlled? | In circuit models, \(I_C=\beta I_B\) is useful, but physically the collector current is primarily controlled by \(V_{BE}\). Base current exists mainly because of recombination and injection requirements. |
+| 4 | What is the difference between MOSFET threshold voltage \(V_T\) and guaranteed turn-on voltage? | \(V_T\) is the onset of strong inversion, not the voltage for low \(R_{DS(on)}\). A MOSFET may begin conducting near \(V_T\) but requires a higher specified \(V_{GS}\) for full enhancement. |
+| 5 | What is the difference between Zener breakdown and avalanche breakdown? | Zener breakdown occurs mainly in heavily doped low-voltage junctions due to tunneling and has a negative temperature coefficient. Avalanche breakdown occurs at higher voltages due to impact ionization and has a positive temperature coefficient. Around \(5\text{ to }6\ \mathrm{V}\), the coefficients can cancel. |
+| 6 | Why does reverse-biasing a pn junction increase depletion width but decrease capacitance? | Reverse bias increases the potential barrier, widening the depletion region. Since \(C_j=\varepsilon A/W\), larger depletion width \(W\) gives smaller junction capacitance. |
+| 7 | Why is a BJT amplifier biased near the middle of the load line? | Midpoint bias maximizes symmetrical output voltage swing before cutoff or saturation clipping. |
+| 8 | Why does a MOSFET gate need a pull-down resistor? | The gate is capacitive and high impedance. Without a defined path to ground, charge can remain on the gate and accidentally turn the MOSFET on. |
+| 9 | Why do power devices need heatsinks even if the circuit current seems small? | Power dissipation is \(P=VI\) or \(I^2R\). Even moderate current can cause large heating if voltage drop or on-resistance is significant. Junction temperature must remain below \(T_{J,max}\). |
+| 10 | What is the body effect in a MOSFET? | The body effect is the increase in threshold voltage when the source-body voltage \(V_{SB}\) is nonzero. For NMOS, \(V_T=V_{T0}+\gamma(\sqrt{2\phi_F+V_{SB}}-\sqrt{2\phi_F})\). |

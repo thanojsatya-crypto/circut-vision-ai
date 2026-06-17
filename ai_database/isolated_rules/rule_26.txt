@@ -1,0 +1,114 @@
+## 1. CORE FORMULAS & MATHEMATICS
+
+### Linear Algebra & Matrix Theory
+- **Determinant (2x2):** $\det(A) = ad - bc$
+- **Inverse Matrix:** $A^{-1} = \frac{1}{\det(A)} \text{adj}(A)$
+- **Eigenvalue Equation:** $\det(A - \lambda I) = 0$
+- **Cramer's Rule:** $x_i = \frac{\det(A_i)}{\det(A)}$
+
+### Differential Equations & Transforms
+- **First Order Linear ODE:** $\frac{dy}{dx} + P(x)y = Q(x) \rightarrow \text{Integrating Factor } \mu(x) = e^{\int P(x)dx}$
+- **Laplace Transform (Standard):**
+    - $\mathcal{L}\{e^{at}\} = \frac{1}{s-a}$
+    - $\mathcal{L}\{\sin(\omega t)\} = \frac{\omega}{s^2 + \omega^2}$
+    - $\mathcal{L}\{\cos(\omega t)\} = \frac{s}{s^2 + \omega^2}$
+    - $\mathcal{L}\{t^n\} = \frac{n!}{s^{n+1}}$
+- **Fourier Transform:** $F(\omega) = \int_{-\infty}^{\infty} f(t) e^{-j\omega t} dt$
+
+### Complex Analysis & Phasors
+- **Euler's Identity:** $e^{j\theta} = \cos\theta + j\sin\theta$
+- **Impedance (Complex):** $Z = R + j(X_L - X_C)$
+- **Reactance:** $X_L = 2\pi fL$, $X_C = \frac{1}{2\pi fC}$
+- **Phase Angle:** $\phi = \tan^{-1}(\frac{X_{total}}{R})$
+
+### Calculus for Circuit Analysis
+- **Current-Voltage Relation:** $i(t) = C \frac{dv}{dt}$ (Capacitor), $v(t) = L \frac{di}{dt}$ (Inductor)
+- **Energy Storage:** $W_C = \frac{1}{2}CV^2$, $W_L = \frac{1}{2}LI^2$
+
+---
+
+## 2. DESIGN ORDER OF OPERATIONS
+
+### Circuit Analysis Flow (Nodal/Mesh)
+1. **Identify Nodes:** Label all junctions; select one as the reference (ground).
+2. **Apply KCL:** Write $\sum I_{in} = \sum I_{out}$ for each non-reference node.
+3. **Substitute Ohm's Law:** Express currents as $\frac{V_{node1} - V_{node2}}{R}$.
+4. **Matrix Formulation:** Arrange equations into $[G][V] = [I]$ format.
+5. **Solve:** Use Cramer's Rule or Matrix Inversion to find node voltages.
+6. **Calculate Branch Currents:** $I_{branch} = \frac{\Delta V}{R}$.
+
+### Transfer Function Derivation (Control Systems)
+1. **Laplace Transform:** Convert all differential equations to the $s$-domain.
+2. **Block Diagram Reduction:** Simplify series, parallel, and feedback loops.
+3. **Transfer Function:** $G(s) = \frac{C(s)}{R(s)} = \frac{G(s)}{1 + G(s)H(s)}$
+4. **Characteristic Equation:** Set denominator $1 + G(s)H(s) = 0$.
+5. **Stability Analysis:** Check poles; if any $\text{Re}(s) > 0$, system is unstable.
+
+---
+
+## 3. STANDARD VALUES & PARAMETERS
+
+### Supply Voltages (Lab Standards)
+- **Digital Logic (TTL):** $5\text{V} \pm 5\%$
+- **Digital Logic (CMOS):** $3.3\text{V}, 1.8\text{V}$
+- **Analog Op-Amp Rails:** $\pm 12\text{V}, \pm 15\text{V}$
+
+### Component Standard Values
+- **Resistors (E24 Series):** $100\Omega, 220\Omega, 330\Omega, 470\Omega, 1\text{k}\Omega, 10\text{k}\Omega, 100\text{k}\Omega$
+- **Capacitors:** $0.1\mu\text{F}$ (Bypass), $10\mu\text{F}, 100\mu\text{F}, 1000\mu\text{F}$ (Filtering)
+- **Tolerance:** Resistors ($\pm 5\%$ Carbon Film), Capacitors ($\pm 10\% \text{ to } \pm 20\%$)
+
+### Thresholds & Limits
+- **Logic High (TTL):** $> 2.0\text{V}$
+- **Logic Low (TTL):** $< 0.8\text{V}$
+- **Op-Amp Saturation:** $V_{out} \approx V_{CC} - 1.5\text{V}$ (Non-rail-to-rail)
+
+---
+
+## 4. PRACTICAL COMPONENT SELECTION RULES
+
+### Capacitor Selection
+- **Ceramic (MLCC):** Use for high-frequency decoupling, noise filtering, small values ($< 1\mu\text{F}$).
+- **Electrolytic:** Use for power supply smoothing, bulk storage, high values ($> 1\mu\text{F}$). **Warning:** Polarized.
+- **Tantalum:** Use for high stability and low ESR in compact spaces.
+
+### Resistor Selection
+- **1/4W (0.25W):** Standard for signal processing and low-current biasing.
+- **1W / 5W:** Use for power dissipation (e.g., current limiting for high-power LEDs or shunt resistors).
+- **Precision (Metal Film):** Use for gain-setting resistors in Op-Amps ($1\%$ tolerance).
+
+### Standard ICs for Math-Based Labs
+- **Summing/Integrating/Differentiating:** $\mu\text{A}741, \text{TL}082, \text{LM}358$
+- **Voltage Regulation:** $7805 (+5\text{V}), 7812 (+12\text{V}), 7905 (-5\text{V})$
+- **Logic Gates:** $74\text{LS}08$ (AND), $74\text{LS}32$ (OR), $74\text{LS}04$ (NOT)
+
+---
+
+## 5. COMMON MISTAKES & TROUBLESHOOTING
+
+| Mistake | Symptom | Corrective Action |
+| :--- | :--- | :--- |
+| **Floating Ground** | Erratic readings; $V_{out}$ fluctuates | Ensure all circuit grounds are tied to a common rail. |
+| **Reverse Polarity** | Component overheating; IC failure | Check electrolytic capacitor polarity and VCC/GND pins. |
+| **Short Circuit** | Power supply current limit triggers | Use multimeter continuity test to find solder bridges/wire overlaps. |
+| **Wrong Resistor Value** | Clipping of signal; no output | Verify color codes; check for $1\text{k}\Omega$ vs $10\text{k}\Omega$ error. |
+| **Open Loop Op-Amp** | Output saturated at rail voltage | Check feedback loop connection (negative feedback path). |
+
+---
+
+## 6. VIVA & INTERVIEW TRAPS
+
+**Q1: Why is the Laplace Transform used instead of Fourier Transform for circuit analysis?**
+**A:** Laplace includes a convergence factor $e^{-\sigma t}$, allowing the analysis of unstable systems and transient responses (initial conditions), whereas Fourier is primarily for steady-state frequency analysis.
+
+**Q2: What happens to the phase of a signal passing through an ideal integrator?**
+**A:** The output is shifted by $-90^\circ$ (lagging) relative to the input.
+
+**Q3: Why is a $0.1\mu\text{F}$ capacitor placed across the VCC pin of an IC?**
+**A:** It acts as a local energy reservoir to filter high-frequency switching noise (decoupling), preventing voltage dips.
+
+**Q4: In a matrix, if the determinant is zero, what does it mean for the circuit equations?**
+**A:** The system of equations is linearly dependent; it implies the circuit has redundant equations or no unique solution (singular matrix).
+
+**Q5: What is the "Virtual Ground" concept in Op-Amps, and when does it fail?**
+**A:** It assumes $V_+ \approx V_-$. It fails when the Op-Amp is not in a negative feedback configuration or when the open-loop gain $A_{ol}$ is insufficient.

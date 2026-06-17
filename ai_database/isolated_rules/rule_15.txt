@@ -1,0 +1,118 @@
+## 1. CORE FORMULAS & MATHEMATICS
+- Forward voltage of LED: \(V_F\) (device‑specific, from datasheet)  
+- Current‑limiting resistor (single LED):  
+  \[
+  R = \frac{V_{SUPPLY} - V_F}{I_F}
+  \]
+- Power dissipated in LED:  
+  \[
+  P_{LED} = V_F \times I_F
+  \]
+- Power dissipated in resistor:  
+  \[
+  P_R = I_F^2 \times R \quad \text{or} \quad P_R = \frac{(V_{SUPPLY} - V_F)^2}{R}
+  \]
+- Luminous flux (approx.):  
+  \[
+  \Phi = \eta \times P_{LED} \quad (\eta = \text{luminous efficacy, lm/W})
+  \]
+- LED driver efficiency:  
+  \[
+  \eta_{DRIVER} = \frac{P_{LED}}{P_{IN}} \times 100\%
+  \]
+- PWM average current (duty cycle D):  
+  \[
+  I_{AVG} = D \times I_F
+  \]
+- Thermal rise:  
+  \[
+  \Delta T = P_{TOTAL} \times R_{\theta JA}
+  \]
+- Series string forward voltage (n LEDs):  
+  \[
+  V_{F,STRING} = n \times V_F
+  \]
+- Parallel string current sharing (ideal):  
+  \[
+  I_{STRING} = \frac{I_{TOTAL}}{m} \quad (m = \text{number of parallel strings})
+  \]
+- Inductor ripple current (buck/boost driver):  
+  \[
+  \Delta I_L = \frac{V_{IN} \times D}{L \times f_{SW}} \quad (\text{buck})
+  \]
+- Capacitor voltage ripple (output):  
+  \[
+  \Delta V_{OUT} = \frac{I_{OUT} \times D}{C \times f_{SW}}
+  \]
+
+## 2. DESIGN PROCEDURE (Step-by-Step)
+1. **Define illumination requirement** – target lux/lumens, area, colour temperature, CRI.  
+2. **Select LED type** – based on required flux, forward voltage, current, package (through‑hole, SMD, high‑power).  
+3. **Determine required forward current (I_F)** – from datasheet lumen‑vs‑current curve to meet flux target.  
+4. **Choose driver topology** – constant‑current linear resistor, switch‑mode buck/boost, or dedicated LED driver IC.  
+5. **Calculate resistor (if linear)** – using \(R = (V_{SUPPLY} - V_F)/I_F\); verify power rating.  
+6. **For switch‑mode driver** – select IC, set feedback resistor for desired I_F, choose inductor (L) and output capacitor (C) per datasheet equations.  
+7. **Thermal design** – compute total power dissipation, select heatsink or PCB copper area using \(\Delta T = P \times R_{\theta JA}\); ensure junction temperature < max rating.  
+8. **Verify electrical ratings** – check LED max forward current, driver voltage/current limits, resistor power derating (≥2× calculated).  
+9. **Prototype & test** – measure forward voltage, current, temperature, luminous output; adjust resistor/feedback if needed.  
+10. **Finalize BOM & PCB layout** – place LED with adequate thermal vias, keep high‑current traces short, add input/output filtering per EMI guidelines.
+
+## 3. STANDARD IC / MODULE REFERENCE
+| Part | Type | Key Specs | Pinout Summary (typical) |
+|------|------|-----------|--------------------------|
+| **LM3409** | Switch‑mode LED driver (buck) | 0.2‑1 A output, 4.5‑40 V Vin, 90% eff, PWM dimming | 1: VIN, 2: SW, 3: GND, 4: FB, 5: COMP, 6: EN/PWM, 7: SS, 8: NC |
+| **TPS92515** | Buck‑boost LED driver | 0.5‑1.5 A, 4.5‑65 V Vin, 95% eff, analog/PWM dim | 1: VIN, 2: SW, 3: GND, 4: FB, 5: COMP, 6: EN, 7: SS, 8: NC |
+| **LT3475** | 4‑switch buck‑boost LED driver | 0.1‑1 A, 4‑36 V Vin, 90% eff, spread‑spectrum | 1: VIN, 2: SW1, 3: SW2, 4: GND, 5: FB, 6: COMP, 7: EN, 8: SS |
+| **MAX16834** | High‑brightness LED driver (buck) | 0‑1 A, 4.5‑40 V Vin, 90% eff, analog dim | 1: VIN, 2: SW, 3: GND, 4: FB, 5: COMP, 6: EN, 7: SS, 8: NC |
+| **XL4015** | Buck converter module (adjustable) | 5 A max, 4‑38 V Vin, 0.8‑30 V Vout, 92% eff | IN+, IN-, OUT+, OUT-, FB (via potentiometer) |
+| **WS2812B** | Addressable RGB LED (5050) | 5 V, 20 mA per channel, 800 kbps data | 1: VDD (+5 V), 2: GND, 3: DIN (data in), 4: DOUT (data out) |
+| **Cree XP‑L HD** | High‑power white LED | 3 V F @ 350 mA, up to 1000 lm, 70 °C/W RθJC | Anode (+), Cathode (−) (2‑pad) |
+| **Lumileds Luxeon Rebel ES** | Mid‑power LED | 2.9 V F @ 350 mA, 150 lm, 40 °C/W RθJC | Anode, Cathode |
+| **LDD‑700H** | Constant‑current LED driver (linear) | 700 mA fixed, 6‑30 V Vin, <1 % current tolerance | 1: VIN, 2: GND, 3: IOUT (to LED+), 4: LED− (sense) |
+
+## 4. COMPONENT SELECTION THRESHOLDS
+- **Resistor (current‑setting):**  
+  - Power rating ≥ 2 × calculated \(P_R\).  
+  - Voltage rating ≥ 1.5 × (V_SUPPLY – V_F).  
+  - Tolerance: 1 % for precision dimming; 5 % acceptable for non‑critical indicator.  
+- **Capacitor (input/output filter):**  
+  - Voltage rating ≥ 1.5 × max ripple voltage.  
+  - ESR low (<0.1 Ω) for high‑frequency switchers; use X7R/X5R ceramic ≥10 µF for bulk.  
+  - Ripple current rating ≥ calculated ripple current (I_ripple).  
+- **Inductor (switch‑mode driver):**  
+  - Saturation current (I_SAT) ≥ 1.2 × peak inductor current.  
+  - RMS current rating ≥ RMS inductor current.  
+  - Inductance tolerance ±20 % (tighten to ±10 % for low‑ripple designs).  
+- **LED (selection):**  
+  - Forward current ≤ 80 % of absolute max for long life.  
+  - Junction temperature (T_J) ≤ T_Jmax – 20 °C derating.  
+  - Viewing angle matched to application (Lambertian vs. focused).  
+- **Driver IC:**  
+  - Input voltage range covers supply with ±10 % margin.  
+  - Output current capability ≥ required I_F + 20 % headroom.  
+  - Thermal pad soldered to copper area ≥ 2 × package size for adequate θJA.  
+
+## 5. BREADBOARD & PCB TROUBLESHOOTING
+| Symptom | Probable Cause | Test Method | Fix |
+|---------|----------------|-------------|-----|
+| LED dim or flickers | Insufficient current (resistor too high or driver feedback mis‑set) | Measure LED current with multimeter; check resistor value or feedback voltage | Decrease resistor; adjust driver feedback resistors to raise I_F |
+| LED overheats / thermal shutdown | Inadequate heatsink or excessive power dissipation | Touch LED (carefully) or use IR thermometer; compare to datasheet T_Jmax | Increase copper area, add thermal vias, or reduce drive current |
+| No light, LED open | LED damaged (over‑current/reverse polarity) or open connection | Diode test on LED; check continuity of traces | Replace LED; verify polarity; ensure solder joints |
+| Uneven brightness in array | Mismatched forward voltages causing current hogging | Measure V_F of each LED; check current sharing resistors | Sort LEDs by V_F binning; add small series resistors (10‑50 mΩ) per string |
+| Driver IC resets or enters protection | Input voltage ripple or over‑current triggering OCP | Probe V_IN with oscilloscope; measure inductor current peak | Add input bulk capacitor; increase inductor size; adjust current limit resistor |
+
+## 6. VIVA & INTERVIEW TRAPS
+1. **Why does a simple resistor limit current poorly for high‑power LEDs?**  
+   *Answer:* Power dissipated in the resistor grows with supply voltage; at high currents the resistor wastes significant power and heats up, reducing efficiency and requiring large power ratings. Switch‑mode drivers maintain constant current with far lower loss.
+
+2. **How does PWM dimming affect LED colour temperature and lifetime?**  
+   *Answer:* PWM maintains the LED’s forward current at its nominal level during the on‑time, so the spectral shape (and thus colour temperature) stays constant. Lifetime is governed by average junction temperature; PWM reduces average power, often improving lifetime compared to analog dimming that lowers current and shifts spectrum.
+
+3. **What is the purpose of the feedback resistor network in a buck‑boost LED driver IC?**  
+   *Answer:* It sets the reference voltage that the internal error amplifier compares to a sense voltage proportional to LED current, thereby programming the desired constant current level.
+
+4. **Explain why inductor saturation current must exceed the peak inductor current, not just the average.**  
+   *Answer:* When the inductor core saturates, its inductance drops sharply, causing current to rise uncontrollably, which can overstress the switch and damage the core. Designing for peak current ensures the inductor stays in the linear region throughout the switching cycle.
+
+5. **In a parallel LED string configuration, how can current sharing be improved without active balancing?**  
+   *Answer:* Insert small value (10‑100 mΩ) resistors in series with each string; the voltage drop across these resistors compensates for V_F mismatches, forcing equal current distribution (passive current balancing).

@@ -1,0 +1,98 @@
+## 1. CORE FORMULAS & MATHEMATICS
+| # | Equation | Description | Variables & Units |
+|---|----------|-------------|-------------------|
+| 1 | **Closed‑loop transfer function**:  \( \displaystyle T(s)=\frac{G(s)}{1+G(s)H(s)} \) | Ratio of output to reference for a unity‑feedback system | \(G(s)\): Open‑loop plant transfer function (unitless) <br> \(H(s)\): Feedback transfer function (unitless) |
+| 2 | **Open‑loop gain**: \( \displaystyle A_{OL}= \frac{V_{out}}{V_{in}} \) | DC gain of an op‑amp or amplifier | \(V_{out}\) (V), \(V_{in}\) (V) |
+| 3 | **PID controller**: \( \displaystyle C(s)=K_P+K_I\frac{1}{s}+K_D s \) | Continuous‑time PID | \(K_P\) (unitless), \(K_I\) (s\(^{-1}\)), \(K_D\) (s) |
+| 4 | **Discrete PID (Tustin)**: \( \displaystyle C(z)=K_P+K_I\frac{T}{2}\frac{z+1}{z-1}+K_D\frac{2}{T}\frac{z-1}{z+1} \) | Discrete implementation, T = sample period | \(T\) (s) |
+| 5 | **Steady‑state error** (type‑N system, unit‑step): \( \displaystyle e_{ss}= \frac{1}{1+K_p} \) | For type‑0 system with proportional gain \(K_p\) | \(K_p\): Position error constant |
+| 6 | **Phase margin**: \( \displaystyle \phi_m = 180^\circ + \angle L(j\omega_{gc}) \) | Stability margin, \(\omega_{gc}\) = gain‑crossover frequency | \(L(j\omega)=G(j\omega)H(j\omega)\) |
+| 7 | **Gain margin**: \( \displaystyle GM = -20\log_{10}|L(j\omega_{pc})| \) | Stability margin, \(\omega_{pc}\) = phase‑crossover frequency | \(L(j\omega)\) as above |
+| 8 | **Bode magnitude**: \( \displaystyle 20\log_{10}|G(j\omega)| \) | Plot for gain vs frequency | \(\omega\) (rad/s) |
+| 9 | **Root locus point**: \( \displaystyle \sum \frac{1}{s-p_i} = \sum \frac{1}{s-z_j} \) | Locus equation, \(p_i\) poles, \(z_j\) zeros | \(s\): complex frequency |
+|10| **State‑space**: \( \dot{x}=Ax+Bu,\; y=Cx+Du \) | Linear time‑invariant representation | \(A\) (n×n), \(B\) (n×m), \(C\) (p×n), \(D\) (p×m) |
+|11| **Controllability matrix**: \( \displaystyle \mathcal{C}=[B\;AB\;A^2B\;\dots\;A^{n-1}B] \) | Full rank → controllable | \(n\): system order |
+|12| **Observability matrix**: \( \displaystyle \mathcal{O}=[C^\top\;(CA)^\top\;(CA^2)^\top\;\dots\;(CA^{n-1})^\top]^\top \) | Full rank → observable |
+|13| **Nyquist stability criterion**: \( N = Z - P \) | \(N\): encirclements of \(-1\); \(Z\): closed‑loop poles; \(P\): open‑loop poles in RHP | |
+|14| **Sampling theorem**: \( f_s \ge 2f_{max} \) | Minimum sampling frequency | \(f_s\) (Hz), \(f_{max}\) (Hz) |
+|15| **Z‑transform**: \( \displaystyle X(z)=\sum_{k=0}^{\infty}x[k]z^{-k} \) | Discrete‑time analysis | \(z\): complex variable |
+|16| **Discrete‑time state‑space**: \( x[k+1]=Ax[k]+Bu[k],\; y[k]=Cx[k]+Du[k] \) | |
+|17| **Approximation – Small‑signal linearization**: \( \displaystyle f(x) \approx f(x_0)+\frac{df}{dx}\bigg|_{x_0}(x-x_0) \) | Used for transistor bias points, motor torque curves, etc. |
+|18| **Thermal noise voltage**: \( \displaystyle v_n = \sqrt{4kTR\Delta f} \) | Resistor noise | \(k\): Boltzmann (1.38e-23 J/K), \(T\): Kelvin, \(R\): Ω, \(\Delta f\): Hz |
+|19| **Slew rate limit**: \( \displaystyle SR = \frac{dV_{out}}{dt}_{max} \) | Max rate of change for op‑amps | V/µs |
+|20| **Bandwidth‑gain product (BGP)**: \( \displaystyle f_{-3dB}\times A_{CL}= \text{constant} \) | For single‑pole op‑amps | Hz·unitless |
+
+---
+
+## 2. DESIGN ORDER OF OPERATIONS
+1. **Define specifications** – required steady‑state error, settling time (\(t_s\)), overshoot (\%OS), bandwidth, and load conditions.  
+2. **Select system type** – type‑0, type‑1, or type‑2 based on error requirements.  
+3. **Choose controller structure** – PID, lead‑lag, or state‑feedback.  
+4. **Compute desired dominant pole locations** using second‑order approximations: <br> \(\displaystyle \omega_n = \frac{4}{t_s}\) ; \(\displaystyle \zeta = -\frac{\ln(\%OS/100)}{\sqrt{\pi^2+[\ln(\%OS/100)]^2}}\)  
+5. **Place poles**: map desired \(\omega_n,\zeta\) to closed‑loop transfer function; solve for controller gains (e.g., \(K_P, K_I, K_D\)).  
+6. **Check gain and phase margins** via Bode plot; adjust with lead/lag networks if margins <45°.  
+7. **Validate controllability/observability** (rank of \(\mathcal{C},\mathcal{O}\)).  
+8. **Discretize** (if digital) using Tustin or bilinear transform; verify sampling rate \(f_s \ge 10\omega_{c}\).  
+9. **Select hardware** – op‑amp with adequate GBW, slew rate, and output swing; power supply rails; sensor conditioning.  
+10. **Simulate** (MATLAB/Simulink, LTspice) – verify transient and frequency response.  
+11. **Prototype on breadboard** – verify gain, offset, noise, and thermal drift.  
+12. **Iterate** – tweak component values, re‑measure, and re‑simulate until specs met.
+
+---
+
+## 3. STANDARD VALUES & PARAMETERS
+| Parameter | Typical College‑Lab Value | Common Range |
+|-----------|---------------------------|--------------|
+| Supply voltage (single‑supply) | 5 V, 12 V, 15 V | 3.3 V – 24 V |
+| Supply voltage (dual) | ±5 V, ±12 V | ±3 V – ±15 V |
+| Op‑amp GBW | 1 MHz – 10 MHz (e.g., TL081, LM358) | 0.5 MHz – 20 MHz |
+| Op‑amp slew rate | 0.5 V/µs – 5 V/µs | 0.1 V/µs – 20 V/µs |
+| Input offset voltage | ≤ 5 mV (standard) | 0 mV – 50 mV |
+| Resistor power rating | ¼ W (½ W for high‑current) | ¼ W, ½ W, 1 W |
+| Standard resistor values | E12 series (1 Ω – 1 MΩ) | E24/E48 for precision |
+| Capacitor types | 0.01 µF – 0.1 µF ceramic, 1 µF – 100 µF electrolytic | 10 pF – 10 µF |
+| Filter cutoff (first‑order) | \(f_c = \frac{1}{2\pi RC}\) → typical 1 kHz – 100 kHz | 10 Hz – 1 MHz |
+| ADC resolution (lab kits) | 10‑bit (0–1023) | 8‑bit – 12‑bit |
+| PWM frequency (microcontroller) | 1 kHz – 20 kHz | 500 Hz – 100 kHz |
+| Motor armature resistance | 2 Ω – 10 Ω (small DC) | 0.5 Ω – 20 Ω |
+| Encoder pulses per rev | 100 – 1024 PPR | 50 – 5000 PPR |
+| Sampling period (digital control) | 0.1 ms – 1 ms | 10 µs – 10 ms |
+
+---
+
+## 4. PRACTICAL COMPONENT SELECTION RULES
+| Decision | Recommended Component | Rationale |
+|----------|----------------------|-----------|
+| **Decoupling** | 0.1 µF ceramic + 10 µF electrolytic per supply rail | Ceramic handles high‑frequency noise; electrolytic supplies bulk capacitance |
+| **Feedback resistor (precision)** | 0.1 % metal‑film (E96) | Low temperature coefficient, accurate gain |
+| **High‑frequency bypass** | 0.01 µF X7R ceramic, placed <5 mm from IC pins | Reduces parasitic inductance |
+| **Current sensing** | 0.1 Ω shunt, 1 % tolerance, 2 W rating | Low voltage drop, adequate power dissipation |
+| **Integrator capacitor (PID)** | NP0/C0G ceramic ≤ 1 nF for low drift; electrolytic only if > 10 nF | Dielectric stability |
+| **Power op‑amp** | LM675 (3 A) or OPA541 (5 A) for > 1 W loads | High current, adequate slew rate |
+| **Voltage reference** | TL431 (2.5 V) or AD780 (5 V) | Low drift, easy trimming |
+| **Digital controller (MCU)** | 8‑bit AVR (ATmega328) or 32‑bit ARM Cortex‑M4 | Sufficient PWM resolution, built‑in ADC |
+| **Sensor conditioning** | Instrumentation amp (INA128) for bridge sensors | High CMRR, low offset |
+| **Isolation** | Optocoupler (4N35) for PWM feedback across different grounds | Prevent ground loops |
+| **Heat dissipation** | Use TO‑220 package with heatsink if power > 0.5 W | Avoid thermal shutdown |
+
+---
+
+## 5. COMMON MISTAKES & TROUBLESHOOTING
+| # | Symptom | Typical Cause | Corrective Action |
+|---|----------|----------------|-------------------|
+| 1 | Oscillating output despite low gain | Missing or insufficient phase‑lead compensation; op‑amp bandwidth too low | Add RC lead network; select op‑amp with higher GBW |
+| 2 | Large steady‑state error | Incorrect PID tuning (Ki = 0) or wrong feedback polarity | Verify sign of feedback; introduce integral term; recalc gains |
+| 3 | Output saturates at rail | Input offset too high; sensor bias not centered; supply rails insufficient | Trim offset (potentiometer); add bias network; raise supply voltage |
+| 4 | Excessive noise on measurement channel | No proper decoupling; long unshielded leads; using electrolytic for high‑frequency bypass | Add 0.1 µF ceramic close to IC; use twisted pair; replace electrolytic with ceramic where possible |
+| 5 | Motor stalls, PWM jitter | Sampling period too large; PWM frequency near motor electrical resonance | Reduce sample time (< 0.5 ms); shift PWM out of resonance (e.g., 8 kHz → 12 kHz) |
+
+---
+
+## 6. VIVA & INTERVIEW TRAPS
+| # | Question | Expected Answer |
+|---|----------|-----------------|
+| 1 | *Why does increasing the proportional gain eventually cause instability, even though it reduces steady‑state error?* | Higher \(K_P\) raises loop gain, reducing phase margin. At a certain point the phase lag from plant dynamics plus the controller causes the loop to encircle \(-1\) → instability. |
+| 2 | *Explain the difference between gain margin and phase margin and which is more critical for a digital controller.* | Gain margin = allowable increase in loop gain before instability; phase margin = allowable phase lag. For digital controllers, phase margin is often more critical because discretization adds phase lag; a margin ≥ 45° is recommended. |
+| 3 | *Derive the relationship between settling time and dominant pole location for a second‑order system.* | Settling time (2% criterion) \(t_s \approx \frac{4}{\zeta\omega_n}\). Dominant poles at \(-\zeta\omega_n \pm j\omega_n\sqrt{1-\zeta^2}\). |
+| 4 | *What is the effect of sensor quantization noise on closed‑loop performance, and how can it be mitigated?* | Quantization adds a white noise floor proportional to LSB/√12, which can be amplified by high loop gain, degrading precision. Mitigation: increase ADC resolution, add low‑pass filtering, or implement dithering. |
+| 5 | *In a state‑feedback design, why must the system be both controllable and observable?* | Controllability ensures we can place poles arbitrarily with state feedback; observability guarantees we can reconstruct states (or design an observer) for feedback. Without either, the desired closed‑loop dynamics cannot be achieved. |
