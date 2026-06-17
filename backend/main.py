@@ -1,13 +1,25 @@
-import streamlit as st
+from fastapi import FastAPI, Form, File, UploadFile, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
 from google import genai
 from google.genai import types
 from PIL import Image
 import os
 import time
+import requests
+import json
+import base64
+from io import BytesIO
 
-# ==============================================================================
-# ========================== APPLICATION CONSTANTS =============================
-# ==============================================================================
+app = FastAPI(title="CircuitVision AI Backend")
+
+# Enable CORS to allow the frontend to communicate with the backend
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 MAX_IMAGE_ATTEMPTS = 3  
 
@@ -389,53 +401,24 @@ RULE_TRIGGERS = {
     }
 }
 
-# ----------------- OVERHAULED MACRO-SEGMENTATION -----------------
 SEGMENTS = {
     "Circuit Theory & Semiconductor Physics": [1, 2, 3, 4, 10, 21, 23, 26, 40],
     "Hardware Design & Synthesis": [5, 6, 7, 14, 15, 18, 19, 20, 24, 32],
     "Embedded, Digital & Microprocessors": [8, 9, 11, 12, 13, 16, 22, 25, 31, 38],
     "Power & Electrical Machines": [36, 37],
     "Lab Execution, Records & Troubleshooting": [17, 27, 28, 29, 30, 33, 34, 35, 39, 41],
-    "Standard Web-Based Project Circuits": [31, 34, 27, 11, 12],  # Dedicated Web Projects Profile
-    "New Unknown Circuit Synthesis (Novel)": list(range(1, 42))  # Core Inventor Profile: Loads all 41 rules
+    "Standard Web-Based Project Circuits": [31, 34, 27, 11, 12],
+    "New Unknown Circuit Synthesis (Novel)": list(range(1, 42))
 }
 
-# ==============================================================================
-# ========================== STREAMLIT INITIALIZATION ==========================
-# ==============================================================================
-
-st.set_page_config(page_title="CircuitVision Engine", page_icon="⚡", layout="wide")
-
-if "image_upload_count" not in st.session_state:
-    st.session_state.image_upload_count = 0
-
-# Ultra-Minimalist Black & White CSS
-st.markdown("""
-<style>
-    .stApp { background-color: #ffffff; color: #000000; }
-    div[data-baseweb="textarea"], div[data-baseweb="input"], div[data-baseweb="select"] {
-        background-color: #f9f9f9 !important;
-        border: 1px solid #000000 !important;
-        border-radius: 4px !important;
-    }
-    textarea, input, select { color: #000000 !important; font-weight: 500 !important; }
-    .footer-container {
-        text-align: center; padding: 15px 0; margin-top: 40px;
-        border-top: 1px solid #000000; font-weight: bold; font-size: 0.9em;
-    }
-    h1, h2, h3, h4, p, label, span { color: #000000 !important; }
-</style>
-""", unsafe_allow_html=True)
-
-# ==============================================================================
-# ========================== DYNAMIC SEGMENT ROUTER ============================
-# ==============================================================================
 
 def dynamic_rule_router(user_prompt, selected_segment):
     prompt_lower = user_prompt.lower()
     triggered_rules = []
     compiled_rules_text = ""
-    base_path = os.path.join("ai_database", "isolated_rules")
+    
+    # Path relative to backend/main.py
+    base_path = os.path.join(os.path.dirname(__file__), "ai_database", "isolated_rules")
     
     # 1. Force load selected segment
     if selected_segment != "Auto-Detect (Keyword Only)":
@@ -457,7 +440,7 @@ def dynamic_rule_router(user_prompt, selected_segment):
             pass
 
     # 3. Keyword scanning for remaining rules
-    if selected_segment != "New Unknown Circuit Synthesis (Novel)":  # Skip scanning if we already loaded everything
+    if selected_segment != "New Unknown Circuit Synthesis (Novel)":
         for rule_idx, data in RULE_TRIGGERS.items():
             if rule_idx in triggered_rules:
                 continue
@@ -474,281 +457,201 @@ def dynamic_rule_router(user_prompt, selected_segment):
         
     return compiled_rules_text, triggered_rules
 
-# ==============================================================================
-# ========================== MINIMALIST SIDEBAR ================================
-# ==============================================================================
 
-with st.sidebar:
-    st.title("⚙️ Configuration")
-    
-    api_provider = st.selectbox("API Provider:", ["OpenRouter", "Google Gemini", "OpenAI"], index=0)
-    user_api_key = st.text_input(f"{api_provider} API Key:", value="", type="password")
-    
-    if api_provider == "Google Gemini":
-        model_options = [
-            "gemini-2.5-flash",
-            "gemini-2.0-flash"
-        ]
-    elif api_provider == "OpenRouter":
-        model_options = [
-            "openai/gpt-4o-mini",
-            "google/gemini-2.5-flash",
-            "google/gemini-2.0-flash",
-            "openrouter/free"
-        ]
-    else:  # OpenAI
-        model_options = [
-            "gpt-4o-mini"
-        ]
+@app.get("/metadata")
+def get_metadata():
+    """Returns lists of rules and segments for frontend routing and dynamic UI rendering."""
+    return {
+        "rule_triggers": RULE_TRIGGERS,
+        "segments": SEGMENTS
+    }
+
+
+@app.post("/synthesize")
+def synthesize(
+    user_goal: str = Form(...),
+    selected_segment: str = Form(...),
+    api_provider: str = Form(...),
+    user_api_key: str = Form(...),
+    selected_model: str = Form(...),
+    image_file: UploadFile = File(None)
+):
+    """Processes the prompt using the selected segment RAG context and submits to the appropriate LLM."""
+    if not user_goal.strip():
+        raise HTTPException(status_code=400, detail="Input parameters or query cannot be empty.")
         
-    selected_model = st.selectbox("Model Core:", model_options)
-    st.caption("ℹ️ Provider is automatically detected based on API Key prefix (e.g. sk-or- for OpenRouter, sk- for OpenAI, AIzaSy for Gemini).")
-    st.write(f"📸 Image Quota: **{MAX_IMAGE_ATTEMPTS - st.session_state.image_upload_count}/{MAX_IMAGE_ATTEMPTS}**")
-    st.markdown("---")
-    st.caption("Developed by: DAMISETTI SATYA THANOJ")
-
-# ==============================================================================
-# ========================== MAIN WORKSPACE UI =================================
-# ==============================================================================
-
-if not user_api_key.strip():
-    st.title("CircuitVision Execution Engine")
-    st.warning(f"⚠️ Enter your {api_provider} API Key in the sidebar to initialize the workspace.")
-    st.stop()
-
-st.title("CircuitVision Execution Engine")
-st.markdown("---")
-
-col_input, col_info = st.columns([2, 1])
-
-# ------------- LEFT COLUMN: PURE WORKSPACE -------------
-with col_input:
-    selected_segment = st.selectbox(
-        "Domain Selection & Generation Mode:",
-        ["Auto-Detect (Keyword Only)"] + list(SEGMENTS.keys())
-    )
+    injected_rules, triggered_ids = dynamic_rule_router(user_goal, selected_segment)
     
-    user_goal = st.text_area(
-        "Engineering Parameters or Lab Query:",
-        height=150,
-        placeholder="e.g., Generate a completely new circuit that combines a 555 timer with a MOSFET to drive a high-power LED array."
-    )
+    # 1. Detect provider based on key prefix
+    api_key_stripped = user_api_key.strip()
+    detected_provider = api_provider
     
-    remaining_attempts = MAX_IMAGE_ATTEMPTS - st.session_state.image_upload_count
-    uploaded_file = None
-    if remaining_attempts > 0:
-        uploaded_file = st.file_uploader(
-            f"Context Image/Schematic ({remaining_attempts} left)",
-            type=["png", "jpg", "jpeg"]
-        )
-
-    if st.button("🚀 Execute Analysis & Synthesis", type="primary", use_container_width=True):
-        if not user_goal.strip():
-            st.error("Input cannot be empty.")
+    if api_key_stripped.startswith("sk-or-"):
+        detected_provider = "OpenRouter"
+    elif api_key_stripped.startswith("sk-proj-") or (api_key_stripped.startswith("sk-") and not api_key_stripped.startswith("sk-or-")):
+        detected_provider = "OpenAI"
+    elif api_key_stripped.startswith("AIzaSy"):
+        detected_provider = "Google Gemini"
+        
+    is_openrouter = (detected_provider == "OpenRouter")
+    is_openai = (detected_provider == "OpenAI")
+    
+    # 2. Model mapping to match detected provider
+    actual_model = selected_model
+    if detected_provider == "Google Gemini":
+        if "gemini-2.0-flash" in selected_model:
+            actual_model = "gemini-2.0-flash"
         else:
-            # If the user selects the massive Synthesis mode, show a loading message
-            if selected_segment == "New Unknown Circuit Synthesis (Novel)":
-                st.info("🔄 Deep Synthesis Mode Active: Cross-referencing all 41 engineering domains. This may take a few seconds...")
-                time.sleep(1)  # Small UX pause to indicate heavy processing
-                
-            injected_rules, triggered_ids = dynamic_rule_router(user_goal, selected_segment)
-            
-            # 1. Auto-detect key prefix to determine provider and bypass mismatch
-            api_key_stripped = user_api_key.strip()
-            detected_provider = api_provider
-            
-            if api_key_stripped.startswith("sk-or-"):
-                detected_provider = "OpenRouter"
-            elif api_key_stripped.startswith("sk-proj-") or (api_key_stripped.startswith("sk-") and not api_key_stripped.startswith("sk-or-")):
-                detected_provider = "OpenAI"
-            elif api_key_stripped.startswith("AIzaSy"):
-                detected_provider = "Google Gemini"
-                
-            is_openrouter = (detected_provider == "OpenRouter")
-            is_openai = (detected_provider == "OpenAI")
-            
-            # 2. Map selected model dynamically to match the detected provider
-            actual_model = selected_model
-            if detected_provider == "Google Gemini":
-                if "gemini-2.0-flash" in selected_model:
-                    actual_model = "gemini-2.0-flash"
-                else:
-                    actual_model = "gemini-2.5-flash"
-                    
-                client = genai.Client(api_key=api_key_stripped)
-            else:
-                client = None
-                if detected_provider == "OpenRouter":
-                    if "gemini-2.5-flash" in selected_model:
-                        actual_model = "google/gemini-2.5-flash"
-                    elif "gemini-2.0-flash" in selected_model:
-                        actual_model = "google/gemini-2.0-flash"
-                    elif "gpt-4o-mini" in selected_model:
-                        actual_model = "openai/gpt-4o-mini"
-                    elif "openrouter/free" in selected_model:
-                        actual_model = "openrouter/free"
-                    else:
-                        actual_model = "google/gemini-2.5-flash"
-                else:  # OpenAI
-                    actual_model = "gpt-4o-mini"
-                    
-            payload = []
-            
-            if uploaded_file and st.session_state.image_upload_count < MAX_IMAGE_ATTEMPTS:
-                st.session_state.image_upload_count += 1
-                img_asset = Image.open(uploaded_file)
-                st.image(img_asset, caption="Visual Asset Uploaded", width=400)
-                payload.append(img_asset)
-            
-            # ---------------- DYNAMIC PROMPT ROUTING BASED ON MODE ----------------
-            if selected_segment == "New Unknown Circuit Synthesis (Novel)":
-                workflow_prompt = """
-                EXECUTION WORKFLOW (NOVEL SYNTHESIS):
-                You are in Inventor Mode. The user wants a circuit that is NOT standard.
-                Use the 41 loaded rules as your building blocks to INVENT a new hardware solution.
-                STEP 1: Define the novel requirements
-                STEP 2: Select cross-domain components (e.g., mixing digital logic with power electronics)
-                STEP 3: Generate the custom schematic logic (How do the blocks connect?)
-                STEP 4: Calculate non-standard boundary conditions and values
-                STEP 5: Provide a complete Bill of Materials (BOM)
-                STEP 6: Identify potential points of failure in this novel design
-                """
-            elif selected_segment == "Standard Web-Based Project Circuits":
-                workflow_prompt = """
-                EXECUTION WORKFLOW (STANDARD WEB PROJECTS):
-                The user wants a well-known, pre-named project commonly found on the internet (e.g., Instructables, GitHub).
-                STEP 1: Identify the standard project name and typical web architecture
-                STEP 2: List the standard, easily sourceable components
-                STEP 3: Provide the standard pinout and wiring guide
-                STEP 4: Provide the expected logic/code flow (if microcontrollers are used)
-                STEP 5: List common issues students face when building this specific internet project
-                """
-            else:
-                workflow_prompt = """
-                EXECUTION WORKFLOW (ENGINEERING MODE):
-                You must sequentially generate your response strictly following these 9 steps.
-                STEP 1: Identify given specifications
-                STEP 2: Identify unknown parameters
-                STEP 3: Select equations (from RAG or standard physics)
-                STEP 4: Substitute values
-                STEP 5: Calculate results (Provide exact numerical values)
-                STEP 6: Choose practical components (Standard values, ratings)
-                STEP 7: Verify design / Generate Lab Tables (Expected readings, observations)
-                STEP 8: List common lab mistakes
-                STEP 9: Generate final circuit/project summary
-                """
+            actual_model = "gemini-2.5-flash"
+    elif detected_provider == "OpenRouter":
+        if "gemini-2.5-flash" in selected_model:
+            actual_model = "google/gemini-2.5-flash"
+        elif "gemini-2.0-flash" in selected_model:
+            actual_model = "google/gemini-2.0-flash"
+        elif "gpt-4o-mini" in selected_model:
+            actual_model = "openai/gpt-4o-mini"
+        elif "openrouter/free" in selected_model:
+            actual_model = "openrouter/free"
+        else:
+            actual_model = "google/gemini-2.5-flash"
+    else:  # OpenAI
+        actual_model = "gpt-4o-mini"
 
-            final_prompt = f"""
-            SYSTEM STATUS: Active
-            
-            USER SYSTEM PARAMETERS: {user_goal}
-            
-            --- RAG KNOWLEDGE BASE ---
-            {injected_rules}
-            --------------------------
-            
-            CRITICAL DIRECTIVES:
-            Theory MUST NOT exceed 10% of the total response. Calculations, tables, hardware mappings, and practical guidance MUST exceed 50%.
-            
-            {workflow_prompt}
-            """
-            payload.append(final_prompt)
-            
-            with st.spinner("Executing Hardware Synthesis & Engine Routing..."):
-                try:
-                    if is_openrouter or is_openai:
-                        import requests
-                        import json
-                        import base64
-                        from io import BytesIO
-                        
-                        # Prepare prompt content parts
-                        content_parts = []
-                        for item in payload:
-                            if isinstance(item, Image.Image):
-                                buffered = BytesIO()
-                                item.save(buffered, format="JPEG")
-                                img_str = base64.b64encode(buffered.getvalue()).decode('utf-8')
-                                content_parts.append({
-                                    "type": "image_url",
-                                    "image_url": {
-                                        "url": f"data:image/jpeg;base64,{img_str}"
-                                    }
-                                })
-                            else:
-                                content_parts.append({
-                                    "type": "text",
-                                    "text": str(item)
-                                })
-                                
-                        if is_openrouter:
-                            endpoint = "https://openrouter.ai/api/v1/chat/completions"
-                        else:
-                            endpoint = "https://api.openai.com/v1/chat/completions"
-                            
-                        headers = {
-                            "Authorization": f"Bearer {user_api_key.strip()}",
-                            "Content-Type": "application/json",
-                        }
-                        payload_data = {
-                            "model": actual_model,
-                            "messages": [
-                                {
-                                    "role": "system",
-                                    "content": "You are a strict technical AI. Output only step-by-step proofs, lab tables, and practical hardware derivations. Do not output conversational filler."
-                                },
-                                {
-                                    "role": "user",
-                                    "content": content_parts if len(content_parts) > 1 else content_parts[0]["text"]
-                                }
-                            ],
-                            "temperature": 0.3
-                        }
-                        res = requests.post(
-                            endpoint,
-                            headers=headers,
-                            json=payload_data,
-                            timeout=60
-                        )
-                        res.raise_for_status()
-                        res_json = res.json()
-                        output_text = res_json["choices"][0]["message"]["content"]
-                    else:
-                        response = client.models.generate_content(
-                            model=actual_model,
-                            contents=payload,
-                            config=types.GenerateContentConfig(
-                                system_instruction="You are a strict technical AI. Output only step-by-step proofs, lab tables, and practical hardware derivations. Do not output conversational filler.",
-                                temperature=0.3  # Slightly higher temperature allows for better "Novel Invention" flexibility
-                            )
-                        )
-                        output_text = response.text
-                        
-                    st.markdown("### 📋 Execution Output")
-                    st.markdown(output_text)
-                except Exception as e:
-                    st.error(f"Execution Halt: {e}")
-                
-# ------------- RIGHT COLUMN: KNOWLEDGE BASE INDEX -------------
-with col_info:
-    st.markdown("### 🔍 Database Index")
-    st.caption("Active RAG Domains")
+    # Prepare visual assets if present
+    payload = []
+    img_asset = None
+    if image_file:
+        try:
+            img_asset = Image.open(image_file.file)
+            payload.append(img_asset)
+        except Exception as e:
+            raise HTTPException(status_code=400, detail=f"Invalid image format: {e}")
+
+    # Select execution workflow prompts
+    if selected_segment == "New Unknown Circuit Synthesis (Novel)":
+        workflow_prompt = """
+        EXECUTION WORKFLOW (NOVEL SYNTHESIS):
+        You are in Inventor Mode. The user wants a circuit that is NOT standard.
+        Use the 41 loaded rules as your building blocks to INVENT a new hardware solution.
+        STEP 1: Define the novel requirements
+        STEP 2: Select cross-domain components (e.g., mixing digital logic with power electronics)
+        STEP 3: Generate the custom schematic logic (How do the blocks connect?)
+        STEP 4: Calculate non-standard boundary conditions and values
+        STEP 5: Provide a complete Bill of Materials (BOM)
+        STEP 6: Identify potential points of failure in this novel design
+        """
+    elif selected_segment == "Standard Web-Based Project Circuits":
+        workflow_prompt = """
+        EXECUTION WORKFLOW (STANDARD WEB PROJECTS):
+        The user wants a well-known, pre-named project commonly found on the internet (e.g., Instructables, GitHub).
+        STEP 1: Identify the standard project name and typical web architecture
+        STEP 2: List the standard, easily sourceable components
+        STEP 3: Provide the standard pinout and wiring guide
+        STEP 4: Provide the expected logic/code flow (if microcontrollers are used)
+        STEP 5: List common issues students face when building this specific internet project
+        """
+    else:
+        workflow_prompt = """
+        EXECUTION WORKFLOW (ENGINEERING MODE):
+        You must sequentially generate your response strictly following these 9 steps.
+        STEP 1: Identify given specifications
+        STEP 2: Identify unknown parameters
+        STEP 3: Select equations (from RAG or standard physics)
+        STEP 4: Substitute values
+        STEP 5: Calculate results (Provide exact numerical values)
+        STEP 6: Choose practical components (Standard values, ratings)
+        STEP 7: Verify design / Generate Lab Tables (Expected readings, observations)
+        STEP 8: List common lab mistakes
+        STEP 9: Generate final circuit/project summary
+        """
+
+    final_prompt = f"""
+    SYSTEM STATUS: Active
     
-    with st.container(height=500):
-        for segment_name, rule_ids in SEGMENTS.items():
-            st.markdown(f"**{segment_name}**")
-            for idx in rule_ids:
-                if idx in RULE_TRIGGERS:
-                    data = RULE_TRIGGERS[idx]
-                    with st.expander(f"{idx}. {data['name']}"):
-                        st.write(f"`{', '.join(data['keywords'])}`")
-            st.markdown("<br>", unsafe_allow_html=True)
+    USER SYSTEM PARAMETERS: {user_goal}
+    
+    --- RAG KNOWLEDGE BASE ---
+    {injected_rules}
+    --------------------------
+    
+    CRITICAL DIRECTIVES:
+    Theory MUST NOT exceed 10% of the total response. Calculations, tables, hardware mappings, and practical guidance MUST exceed 50%.
+    
+    {workflow_prompt}
+    """
+    payload.append(final_prompt)
+    
+    # Model communication routing
+    try:
+        if is_openrouter or is_openai:
+            content_parts = []
+            for item in payload:
+                if isinstance(item, Image.Image):
+                    buffered = BytesIO()
+                    item.save(buffered, format="JPEG")
+                    img_str = base64.b64encode(buffered.getvalue()).decode('utf-8')
+                    content_parts.append({
+                        "type": "image_url",
+                        "image_url": {
+                            "url": f"data:image/jpeg;base64,{img_str}"
+                        }
+                    })
+                else:
+                    content_parts.append({
+                        "type": "text",
+                        "text": str(item)
+                    })
+                    
+            if is_openrouter:
+                endpoint = "https://openrouter.ai/api/v1/chat/completions"
+            else:
+                endpoint = "https://api.openai.com/v1/chat/completions"
+                
+            headers = {
+                "Authorization": f"Bearer {api_key_stripped}",
+                "Content-Type": "application/json",
+            }
+            payload_data = {
+                "model": actual_model,
+                "messages": [
+                    {
+                        "role": "system",
+                        "content": "You are a strict technical AI. Output only step-by-step proofs, lab tables, and practical hardware derivations. Do not output conversational filler."
+                    },
+                    {
+                        "role": "user",
+                        "content": content_parts if len(content_parts) > 1 else content_parts[0]["text"]
+                    }
+                ],
+                "temperature": 0.3
+            }
+            res = requests.post(
+                endpoint,
+                headers=headers,
+                json=payload_data,
+                timeout=60
+            )
+            res.raise_for_status()
+            res_json = res.json()
+            output_text = res_json["choices"][0]["message"]["content"]
+        else:
+            client = genai.Client(api_key=api_key_stripped)
+            response = client.models.generate_content(
+                model=actual_model,
+                contents=payload,
+                config=types.GenerateContentConfig(
+                    system_instruction="You are a strict technical AI. Output only step-by-step proofs, lab tables, and practical hardware derivations. Do not output conversational filler.",
+                    temperature=0.3
+                )
+            )
+            output_text = response.text
+            
+        return {"output": output_text}
+        
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
-# ==============================================================================
-# ========================== FOOTER ============================================
-# ==============================================================================
-st.markdown("""
-<div class="footer-container">
-    CircuitVision • Engineered by DAMISETTI SATYA THANOJ
-</div>
-""", unsafe_allow_html=True)
+
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)
