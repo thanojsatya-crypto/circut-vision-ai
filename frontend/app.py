@@ -49,7 +49,7 @@ with st.sidebar:
     )
     
     api_provider = st.selectbox("API Provider:", ["OpenRouter", "Google Gemini", "OpenAI"], index=0)
-    user_api_key = st.text_input(f"{api_provider} API Key (Optional):", value="", type="password", help="Leave blank to use the server's pre-configured keys.")
+    user_api_key = st.text_input(f"{api_provider} API Key:", value="", type="password")
     
     if api_provider == "Google Gemini":
         model_options = [
@@ -104,7 +104,11 @@ except Exception:
 # ========================== MAIN WORKSPACE UI =================================
 # ==============================================================================
 
-# The user is no longer strictly halted if the API Key is empty since the backend has fallback environment variables.
+if not user_api_key.strip():
+    st.title("CircuitVision Execution Engine")
+    st.warning(f"⚠️ Enter your {api_provider} API Key in the sidebar to initialize the workspace.")
+    st.stop()
+
 st.title("CircuitVision Execution Engine")
 st.markdown("---")
 
