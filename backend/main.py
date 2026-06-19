@@ -584,6 +584,13 @@ def synthesize(
     Theory MUST NOT exceed 10% of the total response. Calculations, tables, hardware mappings, and practical guidance MUST exceed 50%.
     
     {workflow_prompt}
+    
+    ADDITIONAL SIMULATION DIRECTIVE:
+    If the design involves a microcontroller, programmable IC, or digital simulation (e.g. Arduino, ESP32, 555 timer, etc.), you MUST append a section at the very end of your response titled "🎮 ONLINE SIMULATION & CODE GUIDE".
+    In this section, provide:
+    1. A complete, well-commented simulation code block (e.g., C/C++ for Arduino/ESP32).
+    2. A step-by-step description of how to wire this circuit in Wokwi.
+    3. A clear instruction to copy this code and simulate the design online at Wokwi by using a markdown link to https://wokwi.com.
     """
     payload.append(final_prompt)
     
