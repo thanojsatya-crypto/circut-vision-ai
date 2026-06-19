@@ -220,6 +220,6 @@ with col_info:
 # ==============================================================================
 st.markdown("""
 <div class="footer-container">
-    CircuitVision • Decoupled Edition
+    CircuitVision • Engineered by DAMISETTI SATYA THANOJ
 </div>
 """, unsafe_allow_html=True)
