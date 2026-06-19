@@ -504,16 +504,22 @@ def synthesize(
         else:
             actual_model = "gemini-2.5-flash"
     elif detected_provider == "OpenRouter":
-        if "gemini-2.5-flash" in selected_model:
+        if "gemini-2.5-flash:free" in selected_model:
+            actual_model = "google/gemini-2.5-flash:free"
+        elif "llama-3.1-8b" in selected_model:
+            actual_model = "meta-llama/llama-3.1-8b-instruct:free"
+        elif "qwen-2.5-coder" in selected_model:
+            actual_model = "qwen/qwen-2.5-coder-32b-instruct:free"
+        elif "gemini-2.5-flash" in selected_model:
             actual_model = "google/gemini-2.5-flash"
         elif "gemini-2.0-flash" in selected_model:
             actual_model = "google/gemini-2.0-flash"
         elif "gpt-4o-mini" in selected_model:
             actual_model = "openai/gpt-4o-mini"
-        elif "openrouter/free" in selected_model:
-            actual_model = "openrouter/free"
+        elif "openrouter/auto" in selected_model or "openrouter/free" in selected_model:
+            actual_model = "openrouter/auto"
         else:
-            actual_model = "google/gemini-2.5-flash"
+            actual_model = selected_model
     else:  # OpenAI
         actual_model = "gpt-4o-mini"
 

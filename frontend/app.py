@@ -59,10 +59,13 @@ with st.sidebar:
         ]
     elif api_provider == "OpenRouter":
         model_options = [
+            "google/gemini-2.5-flash:free",
+            "meta-llama/llama-3.1-8b-instruct:free",
+            "qwen/qwen-2.5-coder-32b-instruct:free",
             "openai/gpt-4o-mini",
             "google/gemini-2.5-flash",
             "google/gemini-2.0-flash",
-            "openrouter/free"
+            "openrouter/auto"
         ]
     else:  # OpenAI
         model_options = [
