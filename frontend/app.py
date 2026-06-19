@@ -48,8 +48,8 @@ with st.sidebar:
             value="https://circuit-vision-ai.up.railway.app",
             help="Change this to your deployed FastAPI backend URL (e.g. https://your-backend.railway.app)"
         )
+        api_provider = st.selectbox("API Provider:", ["OpenRouter", "Google Gemini", "OpenAI"], index=0)
     
-    api_provider = st.selectbox("API Provider:", ["OpenRouter", "Google Gemini", "OpenAI"], index=0)
     user_api_key = st.text_input(f"{api_provider} API Key:", value="", type="password")
     
     if api_provider == "Google Gemini":
