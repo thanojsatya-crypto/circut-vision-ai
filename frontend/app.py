@@ -44,7 +44,7 @@ with st.sidebar:
     # Configure Backend API URL
     backend_url = st.text_input(
         "Backend API URL:",
-        value="http://localhost:8000",
+        value="https://circuit-vision-ai.up.railway.app",
         help="Change this to your deployed FastAPI backend URL (e.g. https://your-backend.railway.app)"
     )
     
