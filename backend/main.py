@@ -472,7 +472,7 @@ def synthesize(
     user_goal: str = Form(...),
     selected_segment: str = Form(...),
     api_provider: str = Form(...),
-    user_api_key: str = Form(...),
+    user_api_key: str = Form(""),
     selected_model: str = Form(...),
     image_file: UploadFile = File(None)
 ):
@@ -482,10 +482,24 @@ def synthesize(
         
     injected_rules, triggered_ids = dynamic_rule_router(user_goal, selected_segment)
     
-    # 1. Detect provider based on key prefix
-    api_key_stripped = user_api_key.strip()
-    detected_provider = api_provider
+    # 1. Resolve API key (use user key if provided, otherwise fallback to server environment variables)
+    api_key_stripped = user_api_key.strip() if user_api_key else ""
+    if not api_key_stripped:
+        if api_provider == "Google Gemini":
+            api_key_stripped = os.environ.get("GEMINI_API_KEY") or ""
+        elif api_provider == "OpenRouter":
+            api_key_stripped = os.environ.get("OPENROUTER_API_KEY") or ""
+        elif api_provider == "OpenAI":
+            api_key_stripped = os.environ.get("OPENAI_API_KEY") or ""
+            
+    if not api_key_stripped:
+        raise HTTPException(
+            status_code=400, 
+            detail=f"API Key for {api_provider} is missing. Please provide it in the frontend sidebar or set it as a backend environment variable."
+        )
     
+    # 2. Detect provider based on key prefix
+    detected_provider = api_provider
     if api_key_stripped.startswith("sk-or-"):
         detected_provider = "OpenRouter"
     elif api_key_stripped.startswith("sk-proj-") or (api_key_stripped.startswith("sk-") and not api_key_stripped.startswith("sk-or-")):
