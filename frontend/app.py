@@ -41,12 +41,13 @@ if "image_upload_count" not in st.session_state:
 with st.sidebar:
     st.title("⚙️ Configuration")
     
-    # Configure Backend API URL
-    backend_url = st.text_input(
-        "Backend API URL:",
-        value="https://circuit-vision-ai.up.railway.app",
-        help="Change this to your deployed FastAPI backend URL (e.g. https://your-backend.railway.app)"
-    )
+    # Configure Backend API URL (Collapsed under expander)
+    with st.expander("🔧 Advanced Settings"):
+        backend_url = st.text_input(
+            "Backend API URL:",
+            value="https://circuit-vision-ai.up.railway.app",
+            help="Change this to your deployed FastAPI backend URL (e.g. https://your-backend.railway.app)"
+        )
     
     api_provider = st.selectbox("API Provider:", ["OpenRouter", "Google Gemini", "OpenAI"], index=0)
     user_api_key = st.text_input(f"{api_provider} API Key:", value="", type="password")
